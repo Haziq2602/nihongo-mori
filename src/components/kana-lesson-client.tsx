@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -13,7 +14,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Quiz } from '@/components/quiz';
-import { ArrowLeft, Volume2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 interface KanaLessonClientProps {
@@ -37,7 +38,8 @@ export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
       audio.play();
     } catch (error) {
       console.error('Failed to play audio:', error);
-      alert('Could not play audio. See console for details.');
+      // It's better to use a toast for errors, but for now, we'll keep it simple.
+      // toast({ title: 'Audio Error', description: 'Could not play audio.', variant: 'destructive' });
     }
   };
 
@@ -97,7 +99,13 @@ export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
                 <div className="p-1">
                   <Card className="shadow-lg">
                     <CardContent className="flex flex-col items-center justify-center p-6 gap-4">
-                      <div className="text-8xl font-bold text-primary">{k.kana}</div>
+                      <button
+                        onClick={() => playAudio(k.audio)}
+                        className="text-8xl font-bold text-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        aria-label={`Play sound for ${k.romaji}`}
+                      >
+                        {k.kana}
+                      </button>
                       <div className="text-2xl text-muted-foreground">{k.romaji}</div>
                       <p className="text-center text-lg">"{k.mnemonic}"</p>
                       <Card className="bg-secondary w-full">
@@ -110,10 +118,7 @@ export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
                                 <p className="text-xl font-semibold">{k.example.word}</p>
                                 <p className="text-muted-foreground">{k.example.reading} - {k.example.meaning}</p>
                             </div>
-                            <Button size="icon" variant="ghost" onClick={() => playAudio(k.audio)}>
-                                <Volume2 />
-                                <span className="sr-only">Play audio for {k.example.word}</span>
-                            </Button>
+                            {/* The audio button for the example word is removed as per the request */}
                           </div>
                         </CardContent>
                       </Card>
