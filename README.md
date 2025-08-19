@@ -1,7 +1,7 @@
 # Nihongo Mori: Your Guide to Mastering Japanese Kana
 
 <p align="center">
-  <img src="https://storage.googleapis.com/project-ava-prod.appspot.com/files_public/ylmYvyxWSCWfT93oX2sBwvfL" alt="Nihongo Mori Logo" data-ai-hint="leaf logo" />
+  <img src="/nihongo-mori-logo.png" alt="Nihongo Mori Logo" />
 </p>
 
 Welcome to Nihongo Mori! This isn't just another flashcard app; it's an interactive learning experience designed to guide you through the first crucial steps of learning Japanese: mastering Hiragana and Katakana. Built with a modern tech stack, Nihongo Mori makes learning intuitive, engaging, and effective.
