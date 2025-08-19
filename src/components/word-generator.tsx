@@ -56,12 +56,7 @@ export function WordGenerator() {
     setError(null);
     setNoWordsFound(false);
 
-    const selectedKanaString = Array.from(selectedKana).join('');
-    // This regex ensures that every character in the word is in the selected set
-    const regex = new RegExp(`^[${selectedKanaString}]+$`);
-
     const possibleWords = allExampleWords.filter(ex => {
-      // Need to handle words with mixed hiragana/katakana if any, or just check the word itself
       const charactersInWord = ex.word.split('');
       return charactersInWord.every(char => selectedKana.has(char));
     });
@@ -76,7 +71,7 @@ export function WordGenerator() {
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 gap-8">
       <Card>
         <CardHeader>
           <CardTitle>1. Select Learned Kana</CardTitle>
@@ -111,7 +106,7 @@ export function WordGenerator() {
             <h2 className="text-xl font-semibold">2. Generate a Word</h2>
             <Button onClick={handleGenerate} disabled={selectedKana.size === 0} className="w-full" size="lg">
                 <Sparkles className="mr-2 h-4 w-4"/>
-                Generate Word
+                Generate New Word
             </Button>
             {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
