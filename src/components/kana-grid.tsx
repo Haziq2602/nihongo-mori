@@ -1,3 +1,4 @@
+
 'use client';
 
 import { KanaLesson } from '@/data/kana';
@@ -6,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Lock, CheckCircle2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 interface KanaGridProps {
   lessons: KanaLesson[];
@@ -14,6 +16,11 @@ interface KanaGridProps {
 
 export function KanaGrid({ lessons, kanaType }: KanaGridProps) {
   const { isLessonUnlocked, learnedKana } = useProgress();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <div className="space-y-8">
@@ -25,8 +32,8 @@ export function KanaGrid({ lessons, kanaType }: KanaGridProps) {
           <div key={lesson.slug}>
             <div className="flex items-center gap-4 mb-4">
               <h2 className="text-2xl font-bold">{lesson.name}</h2>
-              {!unlocked && <Lock className="h-5 w-5 text-muted-foreground" />}
-               {unlocked && allKanaInLessonLearned && <CheckCircle2 className="h-5 w-5 text-green-500" />}
+              {isMounted && !unlocked && <Lock className="h-5 w-5 text-muted-foreground" />}
+              {isMounted && unlocked && allKanaInLessonLearned && <CheckCircle2 className="h-5 w-5 text-green-500" />}
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {lesson.kana.map((k) => {
