@@ -1,11 +1,10 @@
-
 # Nihongo Mori: Your Guide to Mastering Japanese Kana
 
 <p align="center">
   <img src="https://placehold.co/600x300.png" alt="Nihongo Mori Logo" data-ai-hint="leaf logo" />
 </p>
 
-Welcome to Nihongo Mori! This isn't just another flashcard app; it's an interactive learning experience designed to guide you through the first crucial steps of learning Japanese: mastering Hiragana and Katakana. Built with a modern tech stack and a sprinkle of AI magic, Nihongo Mori makes learning intuitive, engaging, and effective.
+Welcome to Nihongo Mori! This isn't just another flashcard app; it's an interactive learning experience designed to guide you through the first crucial steps of learning Japanese: mastering Hiragana and Katakana. Built with a modern tech stack, Nihongo Mori makes learning intuitive, engaging, and effective.
 
 ## What is Nihongo Mori?
 
@@ -24,7 +23,7 @@ The app breaks down all the characters, including their modified **dakuten (濁�
 *   **Practical Examples:** See and hear each kana used in a common Japanese word.
 *   **Gamified Quizzes:** Test your knowledge at the end of each lesson. Quizzes feature audio hints, and you'll need to pass to unlock the next set of characters.
 *   **Detailed Progress Tracking:** The app remembers which lessons you've completed and which kana you've learned. The quiz results screen shows detailed stats on your accuracy with and without using audio hints, helping you identify areas for improvement.
-*   **AI Sentence Builder:** Use the kana you've mastered to generate simple, custom example sentences with the help of Google's Gemini model, powered by Genkit.
+*   **Word Generator:** Use the kana you've mastered to generate simple, custom example words from a pre-written vocabulary list.
 
 ## Tech Stack
 
@@ -35,7 +34,6 @@ This project is built with a modern, robust, and scalable technology stack, perf
 *   **UI Library:** [React](https://reactjs.org/)
 *   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 *   **Component Library:** [ShadCN UI](https://ui.shadcn.com/)
-*   **AI/Generative:** [Genkit](https://firebase.google.com/docs/genkit) (with Google Gemini)
 *   **State Management:** React Hooks & Context API for client-side state.
 
 ## Getting Started
@@ -64,19 +62,7 @@ Install all the necessary packages using npm.
 npm install
 ```
 
-### 3. Set Up Environment Variables
-
-The AI Sentence Builder uses the Google Gemini API. You'll need an API key to make it work.
-
-1.  Create a new file named `.env` in the root of your project.
-2.  Obtain an API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
-3.  Add your key to the `.env` file:
-
-```env
-GEMINI_API_KEY=your_google_api_key_here
-```
-
-### 4. Run the Development Server
+### 3. Run the Development Server
 
 Now you're ready to start the app!
 
@@ -92,12 +78,8 @@ Here's a quick overview of the key directories in the project:
 
 ```
 src
-├── ai/
-│   ├── flows/          # Genkit flows for AI features
-│   └── genkit.ts       # Genkit configuration
 ├── app/
 │   ├── (routes)/       # Next.js App Router pages
-│   ├── actions.ts      # Server Actions
 │   ├── globals.css     # Global styles and Tailwind directives
 │   └── layout.tsx      # Root layout
 ├── components/
@@ -124,15 +106,14 @@ The core learning experience is managed by the `useProgress` hook (`src/hooks/us
 
 A lesson is considered "unlocked" if its slug is in the `completedLessons` set. When a user completes a quiz, the current lesson is marked as complete, and the *next* lesson is automatically unlocked, creating a clear path for progression.
 
-### AI-Powered Sentences
+### Local Word Generator
 
-The **AI Sentence Builder** is powered by a Genkit flow defined in `src/ai/flows/generate-example-sentences.ts`.
+The **Word Generator** is a client-side tool that helps reinforce learning.
 
-1.  The user selects kana they have learned in the `SentenceBuilder` component (`src/components/sentence-builder.tsx`).
-2.  When they click "Generate", a Next.js Server Action (`src/app/actions.ts`) is called.
-3.  This action invokes the `generateExampleSentences` flow, passing the array of selected kana.
-4.  The Genkit flow uses a typed prompt with a Zod schema to instruct the Gemini model to create simple, beginner-friendly sentences using *only* the provided characters.
-5.  The generated sentences are returned to the client and displayed to the user, providing a contextual way to practice what they've learned.
+1.  The user selects kana they have learned in the `WordGenerator` component (`src/components/word-generator.tsx`).
+2.  When they click "Generate", the component filters a pre-defined list of example words stored in `src/data/kana.ts`.
+3.  It finds all words that can be constructed using *only* the selected kana characters.
+4.  A random word from this filtered list is then displayed to the user, providing a contextual way to practice what they've learned.
 
 ---
 
