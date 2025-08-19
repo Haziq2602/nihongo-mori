@@ -12,25 +12,33 @@ interface ProgressData {
 
 const isServer = typeof window === 'undefined';
 
+const defaultProgress: ProgressData = { 
+  learnedKana: [], 
+  completedLessons: ['vowels-hiragana'] 
+};
+
 function loadProgress(): ProgressData {
   if (isServer) {
-    return { learnedKana: [], completedLessons: [] };
+    return defaultProgress;
   }
   try {
     const data = localStorage.getItem(KANA_COMPASS_PROGRESS_KEY);
     if (data) {
       const parsed = JSON.parse(data);
       // Ensure the first lesson is always unlocked
-      if (!parsed.completedLessons.includes('vowels-hiragana')) {
-        parsed.completedLessons.push('vowels-hiragana');
-      }
-      return parsed;
+      const completed = new Set(parsed.completedLessons || []);
+      completed.add('vowels-hiragana');
+      
+      return {
+          learnedKana: parsed.learnedKana || [],
+          completedLessons: Array.from(completed)
+      };
     }
   } catch (error) {
     console.error('Failed to load progress from localStorage', error);
   }
   // Default state with first lesson unlocked
-  return { learnedKana: [], completedLessons: ['vowels-hiragana'] };
+  return defaultProgress;
 }
 
 function saveProgress(data: ProgressData) {
@@ -43,20 +51,10 @@ function saveProgress(data: ProgressData) {
 }
 
 export function useProgress() {
-  const [progress, setProgress] = useState<ProgressData>(loadProgress());
+  const [progress, setProgress] = useState<ProgressData>(defaultProgress);
 
   useEffect(() => {
-    // This effect runs on mount and ensures state is synced with localStorage
-    // especially for the initial hydration.
     setProgress(loadProgress());
-  }, []);
-
-  const updateProgress = useCallback((newProgress: Partial<ProgressData>) => {
-    setProgress(currentProgress => {
-      const updatedProgress = { ...currentProgress, ...newProgress };
-      saveProgress(updatedProgress);
-      return updatedProgress;
-    });
   }, []);
 
   const addLearnedKana = useCallback((kana: string) => {
@@ -91,6 +89,7 @@ export function useProgress() {
   }, []);
 
   const isLessonUnlocked = useCallback((lessonSlug: string, kanaType: 'hiragana' | 'katakana') => {
+    if (isServer) return false;
     const lessonId = `${lessonSlug}-${kanaType}`;
     return progress.completedLessons.includes(lessonId);
   }, [progress.completedLessons]);
