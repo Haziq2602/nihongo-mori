@@ -7,24 +7,24 @@ export interface SentenceResult {
     sentence: string;
     romaji: string;
     translation: string;
-    audio: string;
 }
 
 export async function generateSentencesAction(kana: string[]): Promise<{sentences?: SentenceResult[], error?: string}> {
   try {
     const result = await generateExampleSentences({ kana });
-    
-    const sentencesWithAudio = await Promise.all(result.sentences.map(async (s) => {
-        const audioResult = await generateAudio(s.sentence);
-        return {
-            ...s,
-            audio: audioResult.audioDataUri,
-        };
-    }));
-
-    return { sentences: sentencesWithAudio };
+    return { sentences: result.sentences };
   } catch (error: any) {
     console.error('Error generating sentences:', error);
     return { error: error.message || 'An unexpected error occurred while generating sentences.' };
   }
+}
+
+export async function generateAudioAction(text: string): Promise<{audio?: string, error?: string}> {
+    try {
+        const result = await generateAudio(text);
+        return { audio: result.audioDataUri };
+    } catch (error: any) {
+        console.error('Error generating audio:', error);
+        return { error: error.message || 'An unexpected error occurred while generating audio.' };
+    }
 }

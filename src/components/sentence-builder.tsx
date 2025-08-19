@@ -6,17 +6,21 @@ import { hiraganaLessons, katakanaLessons } from '@/data/kana';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { generateSentencesAction, SentenceResult } from '@/app/actions';
-import { BotMessageSquare, Sparkles, Volume2 } from 'lucide-react';
+import { generateSentencesAction, generateAudioAction, SentenceResult } from '@/app/actions';
+import { BotMessageSquare, Sparkles, Volume2, Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const allKana = [...hiraganaLessons, ...katakanaLessons].flatMap(l => l.kana);
 
 export function SentenceBuilder() {
   const { learnedKana } = useProgress();
+  const { toast } = useToast();
   const [selectedKana, setSelectedKana] = useState<Set<string>>(new Set());
   const [generatedSentences, setGeneratedSentences] = useState<SentenceResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [playingAudioFor, setPlayingAudioFor] = useState<number | null>(null);
+
 
   const learnedKanaList = useMemo(() => {
     return allKana.filter(k => learnedKana.has(k.kana));
@@ -34,12 +38,30 @@ export function SentenceBuilder() {
     });
   };
   
-  const playAudio = (audioSrc: string) => {
+  const playAudio = async (sentence: string, index: number) => {
+    setPlayingAudioFor(index);
     try {
-      const audio = new Audio(audioSrc);
-      audio.play();
+      const result = await generateAudioAction(sentence);
+      if (result.audio) {
+        const audio = new Audio(result.audio);
+        audio.play();
+        audio.onended = () => setPlayingAudioFor(null);
+      } else {
+        toast({
+            variant: "destructive",
+            title: "Audio Error",
+            description: result.error || 'Failed to play audio.'
+        });
+        setPlayingAudioFor(null);
+      }
     } catch (error) {
       console.error('Failed to play audio:', error);
+      toast({
+        variant: "destructive",
+        title: "Audio Error",
+        description: 'An unexpected error occurred.'
+      });
+      setPlayingAudioFor(null);
     }
   };
 
@@ -102,8 +124,8 @@ export function SentenceBuilder() {
         <div className="space-y-4">
             <h2 className="text-xl font-semibold">2. Generate Sentences</h2>
             <Button onClick={handleGenerate} disabled={isLoading || selectedKana.size === 0} className="w-full" size="lg">
+                {isLoading ? <Loader2 className="animate-spin" /> : <Sparkles className="mr-2 h-4 w-4"/>}
                 {isLoading ? 'Generating...' : 'Generate with AI'}
-                <Sparkles className="ml-2 h-4 w-4"/>
             </Button>
             {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
@@ -125,10 +147,11 @@ export function SentenceBuilder() {
                                  <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() => playAudio(s.audio)}
+                                    onClick={() => playAudio(s.sentence, index)}
+                                    disabled={playingAudioFor !== null}
                                     aria-label="Play sentence audio"
                                  >
-                                    <Volume2 className="h-5 w-5" />
+                                    {playingAudioFor === index ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
                                  </Button>
                                  <p className="text-lg font-semibold">{s.sentence}</p>
                                </div>
