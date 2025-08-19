@@ -14,16 +14,17 @@ Kana Compass is a web application created to help beginners learn the two fundam
 *   **ひらがな (Hiragana):** The basic phonetic script, used for native Japanese words and grammatical elements.
 *   **カタカナ (Katakana):** Used for foreign loanwords, onomatopoeia, and for emphasis.
 
-The app breaks down the 92 characters into manageable, themed lessons. You'll learn each character's pronunciation, see how it's used in real words, and solidify your knowledge with quizzes before advancing.
+The app breaks down all the characters, including their modified **dakuten (濁点)** and **handakuten (半濁点)** forms, into manageable, themed lessons. You'll learn each character's pronunciation, see how it's used in real words, and solidify your knowledge with quizzes before advancing.
 
 ## Features
 
-*   **Interactive Lessons:** Progress through structured lessons for both Hiragana and Katakana, from vowels to more complex characters.
+*   **Interactive Lessons:** Progress through structured lessons for both Hiragana and Katakana. Simply click on a kana character to hear its pronunciation instantly!
+*   **Integrated Dakuten/Handakuten:** Learn modified characters (like が or ぱ) alongside their base forms (か and は) for a more logical learning flow.
 *   **Engaging Mnemonics:** Each character comes with a memorable mnemonic to help it stick in your mind.
 *   **Practical Examples:** See and hear each kana used in a common Japanese word.
-*   **Gamified Quizzes:** Test your knowledge at the end of each lesson. You'll need to pass a quiz to unlock the next set of characters!
-*   **Progress Tracking:** The app remembers which characters you've learned and which lessons you've completed, allowing you to pick up right where you left off.
-*   **AI Sentence Builder:** This is where it gets fun! Use the kana you've mastered to generate simple, custom example sentences with the help of Google's Gemini model, powered by Genkit.
+*   **Gamified Quizzes:** Test your knowledge at the end of each lesson. Quizzes feature audio hints, and you'll need to pass to unlock the next set of characters.
+*   **Detailed Progress Tracking:** The app remembers which lessons you've completed and which kana you've learned. The quiz results screen shows detailed stats on your accuracy with and without using audio hints, helping you identify areas for improvement.
+*   **AI Sentence Builder:** Use the kana you've mastered to generate simple, custom example sentences with the help of Google's Gemini model, powered by Genkit.
 
 ## Tech Stack
 
@@ -119,6 +120,7 @@ src
 The core learning experience is managed by the `useProgress` hook (`src/hooks/use-progress.ts`). This hook uses the browser's `localStorage` to keep track of:
 1.  **Learned Kana:** A set of individual kana characters the user has successfully been quizzed on.
 2.  **Completed Lessons:** A set of lesson slugs that the user has passed.
+3.  **Quiz Results:** A history of quiz attempts, including whether audio hints were used, to calculate performance statistics.
 
 A lesson is considered "unlocked" if its slug is in the `completedLessons` set. When a user completes a quiz, the current lesson is marked as complete, and the *next* lesson is automatically unlocked, creating a clear path for progression.
 
