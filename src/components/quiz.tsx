@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -9,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { shuffle } from 'lodash';
 import { useProgress } from '@/hooks/use-progress';
 import { Volume2 } from 'lucide-react';
+import { StrugglingHint } from './struggling-hint';
 
 interface QuizProps {
   kanaInLesson: Kana[];
@@ -67,6 +69,8 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [isFinished, setIsFinished] = useState(false);
   const [audioUsedOn, setAudioUsedOn] = useState<Set<number>>(new Set());
+  const [hasInteracted, setHasInteracted] = useState(false);
+
 
   useEffect(() => {
     setQuestions(generateQuestions(kanaInLesson));
@@ -79,6 +83,7 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
       setAudioUsedOn(prev => new Set(prev).add(currentQuestionIndex));
       const audio = new Audio(audioSrc);
       audio.play();
+      setHasInteracted(true);
     } catch (error) {
       console.error('Failed to play audio:', error);
     }
@@ -96,6 +101,7 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
 
   const handleAnswer = (answer: string) => {
     if (selectedAnswer) return;
+    setHasInteracted(true);
 
     setSelectedAnswer(answer);
     let correct = false;
@@ -118,6 +124,7 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
     });
     
     setTimeout(() => {
+      setHasInteracted(false);
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(i => i + 1);
         setSelectedAnswer(null);
@@ -178,7 +185,7 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
   }
 
   return (
-    <Card className="w-full max-w-2xl">
+    <Card className="w-full max-w-2xl relative">
       <CardHeader>
         <CardTitle>Quiz Time!</CardTitle>
         <CardDescription>
@@ -187,6 +194,10 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
         <Progress value={progress} className="mt-2"/>
       </CardHeader>
       <CardContent className="flex flex-col items-center gap-8">
+        <StrugglingHint
+            hasInteracted={hasInteracted}
+            text="Struggling? Tap the speaker to hear the pronunciation."
+        />
         <div className="flex items-center gap-4">
             <div className="text-8xl font-bold text-primary">
             {currentQuestion.type === 'kana-to-romaji' ? currentQuestion.kana.kana : currentQuestion.kana.romaji}
