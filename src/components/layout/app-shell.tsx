@@ -25,7 +25,7 @@ import { ModeToggle } from '../mode-toggle';
 function AppShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isMobile = useIsMobile();
-  const { state, setOpenMobile } = useSidebar();
+  const { setOpenMobile } = useSidebar();
   const [isMounted, setIsMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -125,15 +125,17 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex items-center justify-between p-4 border-b md:hidden">
-            <div className="flex items-center gap-2">
-                <Leaf className="h-6 w-6 text-primary" />
-                <span className="font-semibold">Nihongo Mori</span>
-            </div>
-            <SidebarTrigger>
-              <PanelLeft />
-            </SidebarTrigger>
-        </header>
+        {isMounted && isMobile && (
+          <header className="flex items-center justify-between p-4 border-b md:hidden">
+              <div className="flex items-center gap-2">
+                  <Leaf className="h-6 w-6 text-primary" />
+                  <span className="font-semibold">Nihongo Mori</span>
+              </div>
+              <SidebarTrigger>
+                <PanelLeft />
+              </SidebarTrigger>
+          </header>
+        )}
         {children}
       </SidebarInset>
     </>
