@@ -2,18 +2,24 @@
 
 import * as React from 'react';
 
+const COLOR_THEME_STORAGE_KEY = 'nihongo-mori-color-theme';
 const THEME_STORAGE_KEY = 'nihongo-mori-theme';
-const DEFAULT_THEME = 'theme-green';
+const DEFAULT_COLOR_THEME = 'theme-green';
 
-type Theme = 'theme-green' | 'theme-blue' | 'theme-red' | 'theme-orange' | 'theme-yellow' | 'theme-lavender';
+type ColorTheme = 'theme-green' | 'theme-blue' | 'theme-red' | 'theme-orange' | 'theme-yellow' | 'theme-lavender';
+type Theme = 'dark' | 'light' | 'system';
 
 interface ThemeProviderState {
+  colorTheme: ColorTheme;
+  setColorTheme: (theme: ColorTheme) => void;
   theme: Theme;
   setTheme: (theme: Theme) => void;
 }
 
 const ThemeProviderContext = React.createContext<ThemeProviderState>({
-  theme: DEFAULT_THEME,
+  colorTheme: DEFAULT_COLOR_THEME,
+  setColorTheme: () => null,
+  theme: 'system',
   setTheme: () => null,
 });
 
@@ -23,25 +29,45 @@ export function ThemeProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const [colorTheme, setColorTheme] = React.useState<ColorTheme>(() => {
+    if (typeof window === 'undefined') {
+      return DEFAULT_COLOR_THEME;
+    }
+    return (localStorage.getItem(COLOR_THEME_STORAGE_KEY) as ColorTheme) || DEFAULT_COLOR_THEME;
+  });
+
   const [theme, setTheme] = React.useState<Theme>(() => {
     if (typeof window === 'undefined') {
-      return DEFAULT_THEME;
+      return 'system';
     }
-    return (localStorage.getItem(THEME_STORAGE_KEY) as Theme) || DEFAULT_THEME;
+    return (localStorage.getItem(THEME_STORAGE_KEY) as Theme) || 'system';
   });
 
   React.useEffect(() => {
     const root = window.document.documentElement;
 
-    root.classList.remove(...root.classList); // Remove all classes
-    
-    if (theme) {
-      root.classList.add(theme);
+    // Remove all theme classes
+    const classesToRemove = Array.from(root.classList).filter(cls => cls.startsWith('theme-'));
+    root.classList.remove(...classesToRemove);
+
+    if (colorTheme) {
+      root.classList.add(colorTheme);
     }
 
-  }, [theme]);
+    const isDark =
+      theme === 'dark' ||
+      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      
+    root.classList.toggle('dark', isDark);
+
+  }, [colorTheme, theme]);
 
   const value = {
+    colorTheme,
+    setColorTheme: (newTheme: ColorTheme) => {
+      localStorage.setItem(COLOR_THEME_STORAGE_KEY, newTheme);
+      setColorTheme(newTheme);
+    },
     theme,
     setTheme: (newTheme: Theme) => {
       localStorage.setItem(THEME_STORAGE_KEY, newTheme);
@@ -64,3 +90,5 @@ export const useTheme = () => {
 
   return context;
 };
+
+    

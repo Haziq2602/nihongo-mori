@@ -23,7 +23,7 @@ const themes = [
 ];
 
 export function ThemeSwitcher() {
-  const { theme, setTheme } = useTheme();
+  const { colorTheme, setColorTheme } = useTheme();
 
   return (
     <DropdownMenu>
@@ -35,13 +35,13 @@ export function ThemeSwitcher() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {themes.map((t) => (
-          <DropdownMenuItem key={t.value} onClick={() => setTheme(t.value)}>
+          <DropdownMenuItem key={t.value} onClick={() => setColorTheme(t.value)}>
             <div
               className={cn(
                 'mr-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full'
               )}
             >
-              {theme === t.value && <Check className="h-4 w-4" />}
+              {colorTheme === t.value && <Check className="h-4 w-4" />}
             </div>
             {t.name}
           </DropdownMenuItem>
@@ -50,3 +50,5 @@ export function ThemeSwitcher() {
     </DropdownMenu>
   );
 }
+
+    

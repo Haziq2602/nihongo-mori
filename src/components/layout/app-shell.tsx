@@ -16,9 +16,10 @@ import {
   SidebarInset,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Leaf, BookOpen, BotMessageSquare, Home } from 'lucide-react';
+import { Leaf, BookOpen, BotMessageSquare, Home, PanelLeft } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ThemeSwitcher } from '@/components/theme-switcher';
+import { ModeToggle } from '../mode-toggle';
 
 function AppShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -106,12 +107,17 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
         </SidebarContent>
         <SidebarFooter className='flex items-center gap-2'>
             <ThemeSwitcher />
+            <ModeToggle />
             {isMounted && <div className='flex-grow'/>}
             {isMounted && isMobile && (
-                <SidebarTrigger />
+                <SidebarTrigger>
+                  <PanelLeft />
+                </SidebarTrigger>
             )}
             {isMounted && !isMobile && (
-                <SidebarTrigger />
+                <SidebarTrigger>
+                   <PanelLeft />
+                </SidebarTrigger>
             )}
         </SidebarFooter>
       </Sidebar>
@@ -122,7 +128,9 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
                     <Leaf className="h-6 w-6 text-primary" />
                     <span className="font-semibold">Nihongo Mori</span>
                 </div>
-                <SidebarTrigger />
+                <SidebarTrigger>
+                  <PanelLeft />
+                </SidebarTrigger>
             </header>
         )}
         {children}
@@ -139,3 +147,5 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </SidebarProvider>
   );
 }
+
+    
