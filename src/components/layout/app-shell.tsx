@@ -21,6 +21,7 @@ import { Leaf, BookOpen, BotMessageSquare, Home, PanelLeft } from 'lucide-react'
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { ModeToggle } from '../mode-toggle';
+import { SplashScreen } from '../splash-screen';
 
 function AppShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -144,8 +145,20 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
 
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const [loading, setLoading] = React.useState(true);
+  
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000); 
+
+    return () => clearTimeout(timer);
+  }, []);
+
+
   return (
     <SidebarProvider>
+      {loading && <SplashScreen />}
       <AppShellContent>{children}</AppShellContent>
     </SidebarProvider>
   );
