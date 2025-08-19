@@ -125,6 +125,43 @@ export const hiraganaLessons: KanaLesson[] = [
           { kana: 'ん', romaji: 'n', type: 'hiragana', mnemonic: 'A lower-case "n".', example: { word: 'パン', reading: 'pan', meaning: 'bread' }, audio: '/audio/n.mp3', stroke: '/strokes/n.svg' },
       ],
   },
+  {
+    name: 'Dakuten (G, Z, D, B)',
+    slug: 'dakuten-1',
+    kana: [
+        { kana: 'が', romaji: 'ga', type: 'hiragana', mnemonic: 'A "guard" (か) with a shield.', example: { word: 'がっこう', reading: 'gakkou', meaning: 'school' }, audio: '/audio/ga.mp3', stroke: '/strokes/ga.svg' },
+        { kana: 'ぎ', romaji: 'gi', type: 'hiragana', mnemonic: 'A "gift" (き) with a ribbon.', example: { word: 'ぎんこう', reading: 'ginkou', meaning: 'bank' }, audio: '/audio/gi.mp3', stroke: '/strokes/gi.svg' },
+        { kana: 'ぐ', romaji: 'gu', type: 'hiragana', mnemonic: '"Good" (く) job!', example: { word: 'ぐんて', reading: 'gunte', meaning: 'work gloves' }, audio: '/audio/gu.mp3', stroke: '/strokes/gu.svg' },
+        { kana: 'げ', romaji: 'ge', type: 'hiragana', mnemonic: '"Get" (け) a prize.', example: { word: 'げんき', reading: 'genki', meaning: 'healthy/energetic' }, audio: '/audio/ge.mp3', stroke: '/strokes/ge.svg' },
+        { kana: 'ご', romaji: 'go', type: 'hiragana', mnemonic: '"Go" (こ) for it!', example: { word: 'ごはん', reading: 'gohan', meaning: 'rice/meal' }, audio: '/audio/go.mp3', stroke: '/strokes/go.svg' },
+        { kana: 'ざ', romaji: 'za', type: 'hiragana', mnemonic: 'A "czar" (さ) with a crown.', example: { word: 'ざっし', reading: 'zasshi', meaning: 'magazine' }, audio: '/audio/za.mp3', stroke: '/strokes/za.svg' },
+        { kana: 'じ', romaji: 'ji', type: 'hiragana', mnemonic: 'A "jeep" (し) driving.', example: { word: 'じかん', reading: 'jikan', meaning: 'time' }, audio: '/audio/ji.mp3', stroke: '/strokes/ji.svg' },
+        { kana: 'ず', romaji: 'zu', type: 'hiragana', mnemonic: 'A "zoo" (す) with a fence.', example: { word: 'みず', reading: 'mizu', meaning: 'water' }, audio: '/audio/zu.mp3', stroke: '/strokes/zu.svg' },
+        { kana: 'ぜ', romaji: 'ze', type: 'hiragana', mnemonic: '"Zen" (せ) meditation.', example: { word: 'かぜ', reading: 'kaze', meaning: 'wind' }, audio: '/audio/ze.mp3', stroke: '/strokes/ze.svg' },
+        { kana: 'ぞ', romaji: 'zo', type: 'hiragana', mnemonic: 'A "zone" (そ) for construction.', example: { word: 'かぞく', reading: 'kazoku', meaning: 'family' }, audio: '/audio/zo.mp3', stroke: '/strokes/zo.svg' },
+        { kana: 'だ', romaji: 'da', type: 'hiragana', mnemonic: '"Ta-da!" (た) with sparkles.', example: { word: 'だいがく', reading: 'daigaku', meaning: 'university' }, audio: '/audio/da.mp3', stroke: '/strokes/da.svg' },
+        { kana: 'ぢ', romaji: 'ji', type: 'hiragana', mnemonic: 'A "jeep" (ち) with a flat tire.', example: { word: 'はなぢ', reading: 'hanaji', meaning: 'nosebleed' }, audio: '/audio/ji.mp3', stroke: '/strokes/ji.svg' },
+        { kana: 'づ', romaji: 'zu', type: 'hiragana', mnemonic: 'A "tsunami" (つ) in a "zoo".', example: { word: 'つづく', reading: 'tsuzuku', meaning: 'to continue' }, audio: '/audio/zu.mp3', stroke: '/strokes/zu.svg' },
+        { kana: 'で', romaji: 'de', type: 'hiragana', mnemonic: '"Deck" (て) the halls.', example: { word: 'でんわ', reading: 'denwa', meaning: 'telephone' }, audio: '/audio/de.mp3', stroke: '/strokes/de.svg' },
+        { kana: 'ど', romaji: 'do', type: 'hiragana', mnemonic: 'A "door" (と) with a knob.', example: { word: 'どこ', reading: 'doko', meaning: 'where' }, audio: '/audio/do.mp3', stroke: '/strokes/do.svg' },
+        { kana: 'ば', romaji: 'ba', type: 'hiragana', mnemonic: 'A "bat" (は) and ball.', example: { word: 'かばん', reading: 'kaban', meaning: 'bag' }, audio: '/audio/ba.mp3', stroke: '/strokes/ba.svg' },
+        { kana: 'び', romaji: 'bi', type: 'hiragana', mnemonic: 'A "bee" (ひ) buzzing.', example: { word: 'くちびる', reading: 'kuchibiru', meaning: 'lips' }, audio: '/audio/bi.mp3', stroke: '/strokes/bi.svg' },
+        { kana: 'ぶ', romaji: 'bu', type: 'hiragana', mnemonic: 'A "boot" (ふ).', example: { word: 'ぶた', reading: 'buta', meaning: 'pig' }, audio: '/audio/bu.mp3', stroke: '/strokes/bu.svg' },
+        { kana: 'べ', romaji: 'be', type: 'hiragana', mnemonic: 'A "bed" (へ).', example: { word: 'たべる', reading: 'taberu', meaning: 'to eat' }, audio: '/audio/be.mp3', stroke: '/strokes/be.svg' },
+        { kana: 'ぼ', romaji: 'bo', type: 'hiragana', mnemonic: 'A "boat" (ほ).', example: { word: 'ぼうし', reading: 'boushi', meaning: 'hat' }, audio: '/audio/bo.mp3', stroke: '/strokes/bo.svg' },
+    ]
+  },
+  {
+      name: 'Handakuten (P)',
+      slug: 'handakuten',
+      kana: [
+        { kana: 'ぱ', romaji: 'pa', type: 'hiragana', mnemonic: '"Pop" (は) corn.', example: { word: 'パン', reading: 'pan', meaning: 'bread' }, audio: '/audio/pa.mp3', stroke: '/strokes/pa.svg' },
+        { kana: 'ぴ', romaji: 'pi', type: 'hiragana', mnemonic: 'A "pea" (ひ).', example: { word: 'えんぴつ', reading: 'enpitsu', meaning: 'pencil' }, audio: '/audio/pi.mp3', stroke: '/strokes/pi.svg' },
+        { kana: 'ぷ', romaji: 'pu', type: 'hiragana', mnemonic: '"Pudding" (ふ).', example: { word: 'てんぷら', reading: 'tenpura', meaning: 'tempura' }, audio: '/audio/pu.mp3', stroke: '/strokes/pu.svg' },
+        { kana: 'ぺ', romaji: 'pe', type: 'hiragana', mnemonic: 'A "pen" (へ).', example: { word: 'ぺんぎん', reading: 'pengin', meaning: 'penguin' }, audio: '/audio/pe.mp3', stroke: '/strokes/pe.svg' },
+        { kana: 'ぽ', romaji: 'po', type: 'hiragana', mnemonic: '"Post" (ほ) office.', example: { word: 'さんぽ', reading: 'sanpo', meaning: 'a walk' }, audio: '/audio/po.mp3', stroke: '/strokes/po.svg' },
+    ],
+  }
 ];
 
 export const katakanaLessons: KanaLesson[] = [
@@ -232,6 +269,43 @@ export const katakanaLessons: KanaLesson[] = [
             { kana: 'ワ', romaji: 'wa', type: 'katakana', mnemonic: 'A glass of "wine".', example: { word: 'ワイン', reading: 'wain', meaning: 'wine' }, audio: '/audio/wa.mp3', stroke: '/strokes/wa.svg' },
             { kana: 'ヲ', romaji: 'wo', type: 'katakana', mnemonic: 'A wolf howling "wooo!".', example: { word: 'ヲタク', reading: 'wotaku', meaning: 'otaku (geek)' }, audio: '/audio/wo.mp3', stroke: '/strokes/wo.svg' },
             { kana: 'ン', romaji: 'n', type: 'katakana', mnemonic: 'A single drop of "ink".', example: { word: 'ペン', reading: 'pen', meaning: 'pen' }, audio: '/audio/n.mp3', stroke: '/strokes/n.svg' },
+        ],
+    },
+    {
+        name: 'Dakuten (G, Z, D, B)',
+        slug: 'dakuten-1',
+        kana: [
+            { kana: 'ガ', romaji: 'ga', type: 'katakana', mnemonic: '"Gas" (カ) station.', example: { word: 'ガス', reading: 'gasu', meaning: 'gas' }, audio: '/audio/ga.mp3', stroke: '/strokes/ga.svg' },
+            { kana: 'ギ', romaji: 'gi', type: 'katakana', mnemonic: 'A "guitar" (キ).', example: { word: 'ギター', reading: 'gitaa', meaning: 'guitar' }, audio: '/audio/gi.mp3', stroke: '/strokes/gi.svg' },
+            { kana: 'グ', romaji: 'gu', type: 'katakana', mnemonic: '"Goo" (ク).', example: { word: 'グループ', reading: 'guruupu', meaning: 'group' }, audio: '/audio/gu.mp3', stroke: '/strokes/gu.svg' },
+            { kana: 'ゲ', romaji: 'ge', type: 'katakana', mnemonic: '"Game" (ケ).', example: { word: 'ゲーム', reading: 'geemu', meaning: 'game' }, audio: '/audio/ge.mp3', stroke: '/strokes/ge.svg' },
+            { kana: 'ゴ', romaji: 'go', type: 'katakana', mnemonic: '"Gorilla" (コ).', example: { word: 'ゴルフ', reading: 'gorufu', meaning: 'golf' }, audio: '/audio/go.mp3', stroke: '/strokes/go.svg' },
+            { kana: 'ザ', romaji: 'za', type: 'katakana', mnemonic: 'A "pizza" (サ) slice.', example: { word: 'ピザ', reading: 'piza', meaning: 'pizza' }, audio: '/audio/za.mp3', stroke: '/strokes/za.svg' },
+            { kana: 'ジ', romaji: 'ji', type: 'katakana', mnemonic: 'A "jeans" (シ) pocket.', example: { word: 'ジーンズ', reading: 'jiinzu', meaning: 'jeans' }, audio: '/audio/ji.mp3', stroke: '/strokes/ji.svg' },
+            { kana: 'ズ', romaji: 'zu', type: 'katakana', mnemonic: 'A "zoo" (ス) with sharp corners.', example: { word: 'ズボン', reading: 'zubon', meaning: 'trousers' }, audio: '/audio/zu.mp3', stroke: '/strokes/zu.svg' },
+            { kana: 'ゼ', romaji: 'ze', type: 'katakana', mnemonic: '"Zero" (セ).', example: { word: 'ゼロ', reading: 'zero', meaning: 'zero' }, audio: '/audio/ze.mp3', stroke: '/strokes/ze.svg' },
+            { kana: 'ゾ', romaji: 'zo', type: 'katakana', mnemonic: 'A "zombie" (ソ).', example: { word: 'ゾーン', reading: 'zoon', meaning: 'zone' }, audio: '/audio/zo.mp3', stroke: '/strokes/zo.svg' },
+            { kana: 'ダ', romaji: 'da', type: 'katakana', mnemonic: '"Dance" (タ).', example: { word: 'ダンス', reading: 'dansu', meaning: 'dance' }, audio: '/audio/da.mp3', stroke: '/strokes/da.svg' },
+            { kana: 'ヂ', romaji: 'ji', type: 'katakana', mnemonic: '"Jeep" (チ) again, but sharp.', example: { word: 'ラヂオ', reading: 'rajio', meaning: 'radio (old spelling)' }, audio: '/audio/ji.mp3', stroke: '/strokes/ji.svg' },
+            { kana: 'ヅ', romaji: 'zu', type: 'katakana', mnemonic: '"Zoo" (ツ) with sharp waves.', example: { word: 'アイヅ', reading: 'aizu', meaning: 'Aizu (place name)' }, audio: '/audio/zu.mp3', stroke: '/strokes/zu.svg' },
+            { kana: 'デ', romaji: 'de', type: 'katakana', mnemonic: '"Desk" (テ).', example: { word: 'デザイン', reading: 'dezain', meaning: 'design' }, audio: '/audio/de.mp3', stroke: '/strokes/de.svg' },
+            { kana: 'ド', romaji: 'do', type: 'katakana', mnemonic: '"Door" (ト).', example: { word: 'ドア', reading: 'doa', meaning: 'door' }, audio: '/audio/do.mp3', stroke: '/strokes/do.svg' },
+            { kana: 'バ', romaji: 'ba', type: 'katakana', mnemonic: 'A "bus" (ハ).', example: { word: 'バス', reading: 'basu', meaning: 'bus' }, audio: '/audio/ba.mp3', stroke: '/strokes/ba.svg' },
+            { kana: 'ビ', romaji: 'bi', type: 'katakana', mnemonic: '"Beer" (ヒ).', example: { word: 'ビール', reading: 'biiru', meaning: 'beer' }, audio: '/audio/bi.mp3', stroke: '/strokes/bi.svg' },
+            { kana: 'ブ', romaji: 'bu', type: 'katakana', mnemonic: '"Book" (フ).', example: { word: 'ブック', reading: 'bukku', meaning: 'book' }, audio: '/audio/bu.mp3', stroke: '/strokes/bu.svg' },
+            { kana: 'ベ', romaji: 'be', type: 'katakana', mnemonic: '"Bed" (ヘ).', example: { word: 'ベッド', reading: 'beddo', meaning: 'bed' }, audio: '/audio/be.mp3', stroke: '/strokes/be.svg' },
+            { kana: 'ボ', romaji: 'bo', type: 'katakana', mnemonic: '"Boat" (ホ).', example: { word: 'ボール', reading: 'booru', meaning: 'ball' }, audio: '/audio/bo.mp3', stroke: '/strokes/bo.svg' },
+        ]
+    },
+    {
+        name: 'Handakuten (P)',
+        slug: 'handakuten',
+        kana: [
+            { kana: 'パ', romaji: 'pa', type: 'katakana', mnemonic: '"Party" (ハ) hat.', example: { word: 'パーティー', reading: 'paathii', meaning: 'party' }, audio: '/audio/pa.mp3', stroke: '/strokes/pa.svg' },
+            { kana: 'ピ', romaji: 'pi', type: 'katakana', mnemonic: '"Pizza" (ヒ) slice.', example: { word: 'ピアノ', reading: 'piano', meaning: 'piano' }, audio: '/audio/pi.mp3', stroke: '/strokes/pi.svg' },
+            { kana: 'プ', romaji: 'pu', type: 'katakana', mnemonic: '"Pool" (フ).', example: { word: 'プール', reading: 'puuru', meaning: 'pool' }, audio: '/audio/pu.mp3', stroke: '/strokes/pu.svg' },
+            { kana: 'ペ', romaji: 'pe', type: 'katakana', mnemonic: '"Pen" (ヘ).', example: { word: 'ペン', reading: 'pen', meaning: 'pen' }, audio: '/audio/pe.mp3', stroke: '/strokes/pe.svg' },
+            { kana: 'ポ', romaji: 'po', type: 'katakana', mnemonic: '"Post" (ホ) office.', example: { word: 'ポスト', reading: 'posuto', meaning: 'postbox' }, audio: '/audio/po.mp3', stroke: '/strokes/po.svg' },
         ],
     },
 ];
