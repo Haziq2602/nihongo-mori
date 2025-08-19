@@ -6,15 +6,15 @@ import { hiraganaLessons, katakanaLessons } from '@/data/kana';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { generateSentencesAction } from '@/app/actions';
-import { BotMessageSquare, Sparkles } from 'lucide-react';
+import { generateSentencesAction, SentenceResult } from '@/app/actions';
+import { BotMessageSquare, Sparkles, Volume2 } from 'lucide-react';
 
 const allKana = [...hiraganaLessons, ...katakanaLessons].flatMap(l => l.kana);
 
 export function SentenceBuilder() {
   const { learnedKana } = useProgress();
   const [selectedKana, setSelectedKana] = useState<Set<string>>(new Set());
-  const [generatedSentences, setGeneratedSentences] = useState<string[]>([]);
+  const [generatedSentences, setGeneratedSentences] = useState<SentenceResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,6 +33,16 @@ export function SentenceBuilder() {
       return newSet;
     });
   };
+  
+  const playAudio = (audioSrc: string) => {
+    try {
+      const audio = new Audio(audioSrc);
+      audio.play();
+    } catch (error) {
+      console.error('Failed to play audio:', error);
+    }
+  };
+
 
   const handleGenerate = async () => {
     if (selectedKana.size === 0) {
@@ -109,8 +119,22 @@ export function SentenceBuilder() {
                 {isLoading && <div className="flex items-center justify-center pt-8"><p className="text-muted-foreground">AI is thinking...</p></div>}
                 {!isLoading && generatedSentences.length > 0 && (
                     <ul className="space-y-4">
-                        {generatedSentences.map((sentence, index) => (
-                            <li key={index} className="text-lg p-3 bg-secondary rounded-md">{sentence}</li>
+                        {generatedSentences.map((s, index) => (
+                            <li key={index} className="p-3 bg-secondary rounded-md space-y-2">
+                               <div className="flex items-center gap-2">
+                                 <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => playAudio(s.audio)}
+                                    aria-label="Play sentence audio"
+                                 >
+                                    <Volume2 className="h-5 w-5" />
+                                 </Button>
+                                 <p className="text-lg font-semibold">{s.sentence}</p>
+                               </div>
+                               <p className="text-sm text-muted-foreground italic pl-12">{s.romaji}</p>
+                               <p className="text-sm pl-12">{s.translation}</p>
+                            </li>
                         ))}
                     </ul>
                 )}
