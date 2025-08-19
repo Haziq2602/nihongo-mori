@@ -2,7 +2,7 @@
 # Nihongo Mori: Your Guide to Mastering Japanese Kana
 
 <p align="center">
-  <img src="https://placehold.co/600x300.png" alt="Nihongo Mori Banner" data-ai-hint="japanese learning" />
+  <img src="https://placehold.co/600x300.png" alt="Nihongo Mori Logo" data-ai-hint="leaf logo" />
 </p>
 
 Welcome to Nihongo Mori! This isn't just another flashcard app; it's an interactive learning experience designed to guide you through the first crucial steps of learning Japanese: mastering Hiragana and Katakana. Built with a modern tech stack and a sprinkle of AI magic, Nihongo Mori makes learning intuitive, engaging, and effective.
@@ -84,7 +84,7 @@ Now you're ready to start the app!
 npm run dev
 ```
 
-The application should now be running at `http://localhost:9002`.
+The application should now be running at `http://localhost:9876`.
 
 ## Project Structure
 
