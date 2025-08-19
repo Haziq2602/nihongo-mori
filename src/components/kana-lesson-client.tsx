@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { KanaLesson } from '@/data/kana';
 import { useProgress } from '@/hooks/use-progress';
 import {
@@ -98,16 +99,28 @@ export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
                 <div className="p-1">
                   <Card className="shadow-lg">
                     <CardContent className="flex flex-col items-center justify-center p-6 gap-4">
-                      <button
-                        onClick={() => playAudio(k.audio)}
-                        className={cn(
-                          'text-8xl font-bold text-primary rounded-lg p-4 transition-all duration-200',
-                          'border bg-card shadow-sm hover:shadow-md hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
-                        )}
-                        aria-label={`Play sound for ${k.romaji}`}
-                      >
-                        {k.kana}
-                      </button>
+                      <div className="flex items-center gap-4 w-full">
+                        <button
+                          onClick={() => playAudio(k.audio)}
+                          className={cn(
+                            'flex-1 text-8xl font-bold text-primary rounded-lg p-4 transition-all duration-200 text-center',
+                            'border bg-card shadow-sm hover:shadow-md hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
+                          )}
+                          aria-label={`Play sound for ${k.romaji}`}
+                        >
+                          {k.kana}
+                        </button>
+                        <div className="w-24 h-24 relative flex-shrink-0">
+                           <Image 
+                            src={k.mnemonic_image}
+                            alt={k.mnemonic}
+                            width={100}
+                            height={100}
+                            className="rounded-md object-cover"
+                            data-ai-hint={k.mnemonic_hint}
+                           />
+                        </div>
+                      </div>
                       <div className="text-2xl text-muted-foreground">{k.romaji}</div>
                       <p className="text-center text-lg">"{k.mnemonic}"</p>
                       <Card className="bg-secondary w-full">
@@ -120,7 +133,6 @@ export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
                                 <p className="text-xl font-semibold">{k.example.word}</p>
                                 <p className="text-muted-foreground">{k.example.reading} - {k.example.meaning}</p>
                             </div>
-                            {/* The audio button for the example word is removed as per the request */}
                           </div>
                         </CardContent>
                       </Card>
