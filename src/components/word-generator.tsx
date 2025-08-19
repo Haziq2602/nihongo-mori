@@ -4,27 +4,26 @@
 import { useState, useMemo } from 'react';
 import { useProgress } from '@/hooks/use-progress';
 import { hiraganaLessons, katakanaLessons } from '@/data/kana';
-import { exampleSentences } from '@/data/sentences';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { BotMessageSquare, Sparkles, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { shuffle } from 'lodash';
+import { generateWordsAction } from '@/app/actions';
 
 const allKana = [...hiraganaLessons, ...katakanaLessons].flatMap(l => l.kana);
 
-interface SentenceResult {
-    sentence: string;
+interface WordResult {
+    word: string;
     romaji: string;
-    translation: string;
+    meaning: string;
 }
 
-export function SentenceBuilder() {
+export function WordGenerator() {
   const { learnedKana } = useProgress();
   const { toast } = useToast();
   const [selectedKana, setSelectedKana] = useState<Set<string>>(new Set());
-  const [generatedSentences, setGeneratedSentences] = useState<SentenceResult[]>([]);
+  const [generatedWords, setGeneratedWords] = useState<WordResult[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,30 +43,29 @@ export function SentenceBuilder() {
     });
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (selectedKana.size === 0) {
       setError('Please select at least one kana character.');
       return;
     }
     setError(null);
     setIsGenerating(true);
-    setGeneratedSentences([]);
+    setGeneratedWords([]);
 
-    setTimeout(() => {
-        const selectedKanaArray = Array.from(selectedKana);
-        
-        const possibleSentences = exampleSentences.filter(s => 
-            s.kana.every(k => selectedKana.has(k))
-        );
+    const result = await generateWordsAction({ kana: Array.from(selectedKana) });
 
-        if (possibleSentences.length === 0) {
-            setError("No example sentences can be made with the selected kana. Try selecting more characters!");
-        } else {
-            setGeneratedSentences(shuffle(possibleSentences).slice(0, 3));
-        }
+    if ('error' in result) {
+        setError(result.error);
+        toast({
+            variant: 'destructive',
+            title: 'Error Generating Words',
+            description: result.error,
+        });
+    } else {
+        setGeneratedWords(result.words);
+    }
 
-        setIsGenerating(false);
-    }, 500); // Simulate generation time
+    setIsGenerating(false);
   };
 
   return (
@@ -103,10 +101,10 @@ export function SentenceBuilder() {
 
       <div className="space-y-8">
         <div className="space-y-4">
-            <h2 className="text-xl font-semibold">2. Generate Sentences</h2>
+            <h2 className="text-xl font-semibold">2. Generate Words</h2>
             <Button onClick={handleGenerate} disabled={isGenerating || selectedKana.size === 0} className="w-full" size="lg">
                 {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles className="mr-2 h-4 w-4"/>}
-                {isGenerating ? 'Generating...' : 'Generate Sentences'}
+                {isGenerating ? 'Generating...' : 'Generate Words'}
             </Button>
             {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
@@ -115,26 +113,26 @@ export function SentenceBuilder() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <BotMessageSquare className="h-6 w-6 text-accent"/>
-                    <span>Example Sentences</span>
+                    <span>Example Words</span>
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                {isGenerating && <div className="flex items-center justify-center pt-8"><p className="text-muted-foreground">Finding sentences...</p></div>}
-                {!isGenerating && generatedSentences.length > 0 && (
+                {isGenerating && <div className="flex items-center justify-center pt-8"><p className="text-muted-foreground">Finding words...</p></div>}
+                {!isGenerating && generatedWords.length > 0 && (
                     <ul className="space-y-4">
-                        {generatedSentences.map((s, index) => (
-                            <li key={index} className="p-3 bg-secondary rounded-md space-y-2">
-                               <div className="flex items-center gap-2">
-                                 <p className="text-lg font-semibold">{s.sentence}</p>
+                        {generatedWords.map((w, index) => (
+                            <li key={index} className="p-3 bg-secondary rounded-md space-y-1">
+                               <div className="flex items-baseline gap-3">
+                                 <p className="text-xl font-bold">{w.word}</p>
+                                 <p className="text-sm text-muted-foreground">{w.romaji}</p>
                                </div>
-                               <p className="text-sm text-muted-foreground italic pl-4">{s.romaji}</p>
-                               <p className="text-sm pl-4">{s.translation}</p>
+                               <p className="text-sm">{w.meaning}</p>
                             </li>
                         ))}
                     </ul>
                 )}
-                 {!isGenerating && generatedSentences.length === 0 && (
-                    <p className="text-muted-foreground text-center pt-8">Your generated sentences will appear here.</p>
+                 {!isGenerating && generatedWords.length === 0 && (
+                    <p className="text-muted-foreground text-center pt-8">Your generated words will appear here.</p>
                 )}
             </CardContent>
         </Card>

@@ -101,12 +101,12 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={pathname.startsWith('/tools/sentence-builder')}
-                tooltip="Sentence Builder"
+                isActive={pathname.startsWith('/tools/word-generator')}
+                tooltip="Word Generator"
               >
-                <Link href="/tools/sentence-builder">
+                <Link href="/tools/word-generator">
                   <BotMessageSquare />
-                  <span>AI Sentences</span>
+                  <span>AI Words</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

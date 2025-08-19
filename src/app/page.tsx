@@ -96,16 +96,16 @@ export default function Dashboard() {
               <div className="rounded-lg bg-accent/10 p-3 text-accent">
                 <BotMessageSquare className="h-6 w-6" />
               </div>
-              <CardTitle>AI Sentence Builder</CardTitle>
+              <CardTitle>AI Word Generator</CardTitle>
             </div>
             <CardDescription className="pt-2">
-              Generate example sentences with the Kana you've learned.
+              Generate example words with the Kana you've learned.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col justify-end">
             <Button asChild variant="secondary" className="w-full">
-              <Link href="/tools/sentence-builder">
-                Go to Builder <ArrowRight className="ml-2 h-4 w-4" />
+              <Link href="/tools/word-generator">
+                Go to Generator <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </CardContent>
