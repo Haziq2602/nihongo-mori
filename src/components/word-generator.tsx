@@ -3,28 +3,30 @@
 
 import { useState, useMemo } from 'react';
 import { useProgress } from '@/hooks/use-progress';
-import { hiraganaLessons, katakanaLessons } from '@/data/kana';
+import { hiraganaLessons, katakanaLessons, allKana } from '@/data/kana';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { BotMessageSquare, Sparkles, Loader2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { generateWordsAction } from '@/app/actions';
+import { BotMessageSquare, Sparkles } from 'lucide-react';
+import { shuffle } from 'lodash';
 
-const allKana = [...hiraganaLessons, ...katakanaLessons].flatMap(l => l.kana);
+const allExampleWords = [...hiraganaLessons, ...katakanaLessons]
+  .flatMap(l => l.kana)
+  .map(k => k.example)
+  // Remove duplicates
+  .filter((value, index, self) => self.findIndex(v => v.word === value.word) === index);
+
 
 interface WordResult {
     word: string;
-    romaji: string;
+    reading: string;
     meaning: string;
 }
 
 export function WordGenerator() {
   const { learnedKana } = useProgress();
-  const { toast } = useToast();
   const [selectedKana, setSelectedKana] = useState<Set<string>>(new Set());
   const [generatedWords, setGeneratedWords] = useState<WordResult[]>([]);
-  const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const learnedKanaList = useMemo(() => {
@@ -43,29 +45,20 @@ export function WordGenerator() {
     });
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = () => {
     if (selectedKana.size === 0) {
       setError('Please select at least one kana character.');
       return;
     }
     setError(null);
-    setIsGenerating(true);
     setGeneratedWords([]);
 
-    const result = await generateWordsAction({ kana: Array.from(selectedKana) });
+    const selectedKanaString = Array.from(selectedKana).join('');
+    const regex = new RegExp(`^[${selectedKanaString}]+$`);
 
-    if ('error' in result) {
-        setError(result.error);
-        toast({
-            variant: 'destructive',
-            title: 'Error Generating Words',
-            description: result.error,
-        });
-    } else {
-        setGeneratedWords(result.words);
-    }
-
-    setIsGenerating(false);
+    const possibleWords = allExampleWords.filter(ex => regex.test(ex.word));
+    
+    setGeneratedWords(shuffle(possibleWords).slice(0, 5));
   };
 
   return (
@@ -102,9 +95,9 @@ export function WordGenerator() {
       <div className="space-y-8">
         <div className="space-y-4">
             <h2 className="text-xl font-semibold">2. Generate Words</h2>
-            <Button onClick={handleGenerate} disabled={isGenerating || selectedKana.size === 0} className="w-full" size="lg">
-                {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles className="mr-2 h-4 w-4"/>}
-                {isGenerating ? 'Generating...' : 'Generate Words'}
+            <Button onClick={handleGenerate} disabled={selectedKana.size === 0} className="w-full" size="lg">
+                <Sparkles className="mr-2 h-4 w-4"/>
+                Generate Words
             </Button>
             {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
@@ -117,21 +110,20 @@ export function WordGenerator() {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                {isGenerating && <div className="flex items-center justify-center pt-8"><p className="text-muted-foreground">Finding words...</p></div>}
-                {!isGenerating && generatedWords.length > 0 && (
+                {generatedWords.length > 0 && (
                     <ul className="space-y-4">
                         {generatedWords.map((w, index) => (
                             <li key={index} className="p-3 bg-secondary rounded-md space-y-1">
                                <div className="flex items-baseline gap-3">
                                  <p className="text-xl font-bold">{w.word}</p>
-                                 <p className="text-sm text-muted-foreground">{w.romaji}</p>
+                                 <p className="text-sm text-muted-foreground">{w.reading}</p>
                                </div>
                                <p className="text-sm">{w.meaning}</p>
                             </li>
                         ))}
                     </ul>
                 )}
-                 {!isGenerating && generatedWords.length === 0 && (
+                 {generatedWords.length === 0 && (
                     <p className="text-muted-foreground text-center pt-8">Your generated words will appear here.</p>
                 )}
             </CardContent>
