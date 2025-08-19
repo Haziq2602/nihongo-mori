@@ -4,8 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { AppShell } from '@/components/layout/app-shell';
 
 export const metadata: Metadata = {
-  title: 'Kana Compass',
-  description: 'Learn basic Japanese (Hiragana and Katakana) with Kana Compass.',
+  title: 'Nihongo Mori',
+  description: 'Learn basic Japanese (Hiragana and Katakana) with Nihongo Mori.',
 };
 
 export default function RootLayout({

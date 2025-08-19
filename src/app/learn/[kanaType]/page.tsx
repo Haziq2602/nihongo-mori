@@ -11,7 +11,7 @@ interface LearnPageProps {
 export function generateMetadata({ params }: LearnPageProps) {
   const title = params.kanaType.charAt(0).toUpperCase() + params.kanaType.slice(1);
   return {
-    title: `Learn ${title} | Kana Compass`,
+    title: `Learn ${title} | Nihongo Mori`,
   };
 }
 

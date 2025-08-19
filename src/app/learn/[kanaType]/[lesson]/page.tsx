@@ -18,12 +18,12 @@ export async function generateMetadata({ params }: LessonPageProps) {
 
   if (!lessonData) {
     return {
-      title: `Lesson Not Found | Kana Compass`,
+      title: `Lesson Not Found | Nihongo Mori`,
     };
   }
 
   return {
-    title: `${kanaTypeName}: ${lessonData.name} | Kana Compass`,
+    title: `${kanaTypeName}: ${lessonData.name} | Nihongo Mori`,
   };
 }
 

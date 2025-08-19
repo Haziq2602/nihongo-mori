@@ -1,7 +1,7 @@
 import { SentenceBuilder } from '@/components/sentence-builder';
 
 export const metadata = {
-    title: 'AI Sentence Builder | Kana Compass',
+    title: 'AI Sentence Builder | Nihongo Mori',
     description: 'Generate example sentences using the kana you have learned.',
 };
 

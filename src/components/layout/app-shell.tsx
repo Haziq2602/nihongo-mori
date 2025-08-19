@@ -16,7 +16,7 @@ import {
   SidebarInset,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Compass, BookOpen, BotMessageSquare, Home } from 'lucide-react';
+import { Leaf, BookOpen, BotMessageSquare, Home } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 function AppShellContent({ children }: { children: React.ReactNode }) {
@@ -34,9 +34,9 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2">
-            <Compass className="h-8 w-8 text-primary" />
+            <Leaf className="h-8 w-8 text-primary" />
             <div className="flex flex-col">
-              <span className="text-lg font-semibold tracking-tight">Kana Compass</span>
+              <span className="text-lg font-semibold tracking-tight">Nihongo Mori</span>
             </div>
           </div>
         </SidebarHeader>
@@ -120,8 +120,8 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
         {isMounted && isMobile && (
             <header className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-2">
-                    <Compass className="h-6 w-6 text-primary" />
-                    <span className="font-semibold">Kana Compass</span>
+                    <Leaf className="h-6 w-6 text-primary" />
+                    <span className="font-semibold">Nihongo Mori</span>
                 </div>
                 <SidebarTrigger />
             </header>

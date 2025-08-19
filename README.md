@@ -1,15 +1,15 @@
 
-# Kana Compass: Your Guide to Mastering Japanese Kana
+# Nihongo Mori: Your Guide to Mastering Japanese Kana
 
 <p align="center">
-  <img src="https://placehold.co/600x300.png" alt="Kana Compass Banner" data-ai-hint="japanese learning" />
+  <img src="https://placehold.co/600x300.png" alt="Nihongo Mori Banner" data-ai-hint="japanese learning" />
 </p>
 
-Welcome to Kana Compass! This isn't just another flashcard app; it's an interactive learning experience designed to guide you through the first crucial steps of learning Japanese: mastering Hiragana and Katakana. Built with a modern tech stack and a sprinkle of AI magic, Kana Compass makes learning intuitive, engaging, and effective.
+Welcome to Nihongo Mori! This isn't just another flashcard app; it's an interactive learning experience designed to guide you through the first crucial steps of learning Japanese: mastering Hiragana and Katakana. Built with a modern tech stack and a sprinkle of AI magic, Nihongo Mori makes learning intuitive, engaging, and effective.
 
-## What is Kana Compass?
+## What is Nihongo Mori?
 
-Kana Compass is a web application created to help beginners learn the two fundamental Japanese syllabaries:
+Nihongo Mori is a web application created to help beginners learn the two fundamental Japanese syllabaries:
 
 *   **ひらがな (Hiragana):** The basic phonetic script, used for native Japanese words and grammatical elements.
 *   **カタカナ (Katakana):** Used for foreign loanwords, onomatopoeia, and for emphasis.
@@ -53,7 +53,7 @@ First, clone the project to your local machine.
 
 ```bash
 git clone https://github.com/Haziq2602/learn-kanas.git
-cd kana-compass
+cd nihongo-mori
 ```
 
 ### 2. Install Dependencies

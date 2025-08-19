@@ -36,7 +36,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Welcome to Kana Compass</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Welcome to Nihongo Mori</h1>
         <p className="text-muted-foreground">
           Your guide to mastering Japanese Hiragana and Katakana.
         </p>
