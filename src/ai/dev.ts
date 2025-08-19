@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/generate-example-sentences.ts';
-import '@/ai/flows/generate-audio.ts';
+// This file is used to register Genkit flows for local development.
+// It is not included in the production build.
