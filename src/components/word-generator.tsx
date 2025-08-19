@@ -26,8 +26,9 @@ interface WordResult {
 export function WordGenerator() {
   const { learnedKana } = useProgress();
   const [selectedKana, setSelectedKana] = useState<Set<string>>(new Set());
-  const [generatedWords, setGeneratedWords] = useState<WordResult[]>([]);
+  const [generatedWord, setGeneratedWord] = useState<WordResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [noWordsFound, setNoWordsFound] = useState(false);
 
   const learnedKanaList = useMemo(() => {
     return allKana.filter(k => learnedKana.has(k.kana));
@@ -48,17 +49,30 @@ export function WordGenerator() {
   const handleGenerate = () => {
     if (selectedKana.size === 0) {
       setError('Please select at least one kana character.');
+      setGeneratedWord(null);
+      setNoWordsFound(false);
       return;
     }
     setError(null);
-    setGeneratedWords([]);
+    setNoWordsFound(false);
 
     const selectedKanaString = Array.from(selectedKana).join('');
+    // This regex ensures that every character in the word is in the selected set
     const regex = new RegExp(`^[${selectedKanaString}]+$`);
 
-    const possibleWords = allExampleWords.filter(ex => regex.test(ex.word));
+    const possibleWords = allExampleWords.filter(ex => {
+      // Need to handle words with mixed hiragana/katakana if any, or just check the word itself
+      const charactersInWord = ex.word.split('');
+      return charactersInWord.every(char => selectedKana.has(char));
+    });
     
-    setGeneratedWords(shuffle(possibleWords).slice(0, 5));
+    if (possibleWords.length > 0) {
+        const randomWord = shuffle(possibleWords)[0];
+        setGeneratedWord(randomWord);
+    } else {
+        setGeneratedWord(null);
+        setNoWordsFound(true);
+    }
   };
 
   return (
@@ -94,10 +108,10 @@ export function WordGenerator() {
 
       <div className="space-y-8">
         <div className="space-y-4">
-            <h2 className="text-xl font-semibold">2. Generate Words</h2>
+            <h2 className="text-xl font-semibold">2. Generate a Word</h2>
             <Button onClick={handleGenerate} disabled={selectedKana.size === 0} className="w-full" size="lg">
                 <Sparkles className="mr-2 h-4 w-4"/>
-                Generate Words
+                Generate Word
             </Button>
             {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
@@ -106,25 +120,24 @@ export function WordGenerator() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <BotMessageSquare className="h-6 w-6 text-accent"/>
-                    <span>Example Words</span>
+                    <span>Example Word</span>
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                {generatedWords.length > 0 && (
-                    <ul className="space-y-4">
-                        {generatedWords.map((w, index) => (
-                            <li key={index} className="p-3 bg-secondary rounded-md space-y-1">
-                               <div className="flex items-baseline gap-3">
-                                 <p className="text-xl font-bold">{w.word}</p>
-                                 <p className="text-sm text-muted-foreground">{w.reading}</p>
-                               </div>
-                               <p className="text-sm">{w.meaning}</p>
-                            </li>
-                        ))}
-                    </ul>
+                {generatedWord && (
+                    <div className="p-4 bg-secondary rounded-md space-y-2 text-center">
+                        <div className="flex items-baseline gap-3 justify-center">
+                            <p className="text-5xl font-bold">{generatedWord.word}</p>
+                        </div>
+                        <p className="text-lg text-muted-foreground">{generatedWord.reading}</p>
+                        <p className="text-lg font-semibold">{generatedWord.meaning}</p>
+                    </div>
                 )}
-                 {generatedWords.length === 0 && (
-                    <p className="text-muted-foreground text-center pt-8">Your generated words will appear here.</p>
+                {noWordsFound && (
+                    <p className="text-muted-foreground text-center pt-8">No words could be found with the selected kana. Try selecting more characters!</p>
+                )}
+                 {!generatedWord && !noWordsFound && (
+                    <p className="text-muted-foreground text-center pt-8">Your generated word will appear here.</p>
                 )}
             </CardContent>
         </Card>
