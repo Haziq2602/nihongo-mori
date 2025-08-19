@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -24,12 +25,19 @@ import { ModeToggle } from '../mode-toggle';
 function AppShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isMobile = useIsMobile();
-  const { state } = useSidebar();
+  const { state, setOpenMobile } = useSidebar();
   const [isMounted, setIsMounted] = React.useState(false);
 
   React.useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  React.useEffect(() => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  }, [pathname, isMobile, setOpenMobile]);
+
 
   return (
     <>
@@ -109,11 +117,6 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
             <ThemeSwitcher />
             <ModeToggle />
             {isMounted && <div className='flex-grow'/>}
-            {isMounted && isMobile && (
-                <SidebarTrigger>
-                  <PanelLeft />
-                </SidebarTrigger>
-            )}
             {isMounted && !isMobile && (
                 <SidebarTrigger>
                    <PanelLeft />
@@ -122,17 +125,15 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        {isMounted && isMobile && (
-            <header className="flex items-center justify-between p-4 border-b">
-                <div className="flex items-center gap-2">
-                    <Leaf className="h-6 w-6 text-primary" />
-                    <span className="font-semibold">Nihongo Mori</span>
-                </div>
-                <SidebarTrigger>
-                  <PanelLeft />
-                </SidebarTrigger>
-            </header>
-        )}
+        <header className="flex items-center justify-between p-4 border-b md:hidden">
+            <div className="flex items-center gap-2">
+                <Leaf className="h-6 w-6 text-primary" />
+                <span className="font-semibold">Nihongo Mori</span>
+            </div>
+            <SidebarTrigger>
+              <PanelLeft />
+            </SidebarTrigger>
+        </header>
         {children}
       </SidebarInset>
     </>
@@ -147,5 +148,3 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </SidebarProvider>
   );
 }
-
-    
