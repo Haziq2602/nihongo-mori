@@ -5,16 +5,30 @@ import { hiraganaLessons, katakanaLessons } from '@/data/kana';
 
 const KANA_COMPASS_PROGRESS_KEY = 'kanaCompassProgress';
 
+interface QuizResult {
+  kana: string;
+  correct: boolean;
+  audioUsed: boolean;
+}
+
 interface ProgressData {
   learnedKana: string[];
   completedLessons: string[];
+  quizResults: QuizResult[];
 }
+
+interface QuizStats {
+    withSound: { correct: number; total: number };
+    noSound: { correct: number; total: number };
+}
+
 
 const isServer = typeof window === 'undefined';
 
 const defaultProgress: ProgressData = { 
   learnedKana: [], 
-  completedLessons: ['vowels-hiragana'] 
+  completedLessons: ['vowels-hiragana'],
+  quizResults: []
 };
 
 function loadProgress(): ProgressData {
@@ -31,7 +45,8 @@ function loadProgress(): ProgressData {
       
       return {
           learnedKana: parsed.learnedKana || [],
-          completedLessons: Array.from(completed)
+          completedLessons: Array.from(completed),
+          quizResults: parsed.quizResults || [],
       };
     }
   } catch (error) {
@@ -98,6 +113,37 @@ export function useProgress() {
     return new Set(progress.learnedKana);
   }, [progress.learnedKana]);
 
+  const addQuizResult = useCallback((result: QuizResult) => {
+    setProgress(current => {
+        const updated = { ...current, quizResults: [...current.quizResults, result] };
+        saveProgress(updated);
+        return updated;
+    });
+  }, []);
+
+  const getStats = useCallback((): QuizStats => {
+    const stats: QuizStats = {
+      withSound: { correct: 0, total: 0 },
+      noSound: { correct: 0, total: 0 },
+    };
+
+    progress.quizResults.forEach(result => {
+        if (result.audioUsed) {
+            stats.withSound.total++;
+            if (result.correct) {
+                stats.withSound.correct++;
+            }
+        } else {
+            stats.noSound.total++;
+            if (result.correct) {
+                stats.noSound.correct++;
+            }
+        }
+    });
+
+    return stats;
+  }, [progress.quizResults]);
+
 
   return {
     learnedKana: getLearnedKanaSet(),
@@ -105,5 +151,7 @@ export function useProgress() {
     addLearnedKana,
     completeLesson,
     isLessonUnlocked,
+    addQuizResult,
+    getStats,
   };
 }
