@@ -7,85 +7,162 @@ body {
 }
 
 @layer base {
-  :root {
-    --background: 255 50% 97%;
-    --foreground: 255 10% 20%;
-    --card: 255 50% 100%;
-    --card-foreground: 255 10% 20%;
-    --popover: 255 50% 100%;
-    --popover-foreground: 255 10% 20%;
-    --primary: 255 83% 76%;
-    --primary-foreground: 255 10% 10%;
-    --secondary: 255 50% 93%;
-    --secondary-foreground: 255 10% 20%;
-    --muted: 255 50% 93%;
-    --muted-foreground: 255 10% 45%;
-    --accent: 313 74% 60%;
-    --accent-foreground: 313 74% 98%;
+  :root, .theme-green {
+    --background: 240 10% 97%;
+    --foreground: 240 5% 20%;
+    --card: 240 10% 100%;
+    --card-foreground: 240 5% 20%;
+    --popover: 240 10% 100%;
+    --popover-foreground: 240 5% 20%;
+    --primary: 142 76% 36%;
+    --primary-foreground: 142 76% 96%;
+    --secondary: 240 10% 93%;
+    --secondary-foreground: 240 5% 20%;
+    --muted: 240 10% 93%;
+    --muted-foreground: 240 5% 45%;
+    --accent: 142 66% 46%;
+    --accent-foreground: 142 66% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 255 50% 90%;
-    --input: 255 50% 90%;
-    --ring: 255 83% 76%;
-    --chart-1: 255 83% 76%;
-    --chart-2: 313 74% 60%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --border: 240 10% 90%;
+    --input: 240 10% 90%;
+    --ring: 142 76% 36%;
+    --chart-1: 142 76% 36%;
+    --chart-2: 142 66% 46%;
     --radius: 0.8rem;
-
-    --sidebar-background: 255 50% 99%;
-    --sidebar-foreground: 255 10% 20%;
-    --sidebar-primary: 255 83% 76%;
-    --sidebar-primary-foreground: 255 10% 10%;
-    --sidebar-accent: 255 50% 93%;
-    --sidebar-accent-foreground: 255 10% 20%;
-    --sidebar-border: 255 50% 90%;
-    --sidebar-ring: 255 83% 76%;
   }
 
-  .dark {
-    --background: 255 10% 10%;
-    --foreground: 255 10% 85%;
-    --card: 255 10% 12%;
-    --card-foreground: 255 10% 85%;
-    --popover: 255 10% 10%;
-    --popover-foreground: 255 10% 85%;
-    --primary: 255 83% 76%;
-    --primary-foreground: 255 10% 10%;
-    --secondary: 255 10% 20%;
-    --secondary-foreground: 255 10% 85%;
-    --muted: 255 10% 20%;
-    --muted-foreground: 255 10% 55%;
-    --accent: 313 74% 60%;
-    --accent-foreground: 313 74% 98%;
+  .dark:root, .dark.theme-green {
+    --background: 240 5% 10%;
+    --foreground: 240 5% 85%;
+    --card: 240 5% 12%;
+    --card-foreground: 240 5% 85%;
+    --popover: 240 5% 10%;
+    --popover-foreground: 240 5% 85%;
+    --primary: 142 76% 46%;
+    --primary-foreground: 142 76% 6%;
+    --secondary: 240 5% 20%;
+    --secondary-foreground: 240 5% 85%;
+    --muted: 240 5% 20%;
+    --muted-foreground: 240 5% 55%;
+    --accent: 142 66% 56%;
+    --accent-foreground: 142 66% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 255 10% 25%;
-    --input: 255 10% 25%;
-    --ring: 255 83% 76%;
-    --chart-1: 255 83% 76%;
-    --chart-2: 313 74% 60%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --border: 240 5% 25%;
+    --input: 240 5% 25%;
+    --ring: 142 76% 46%;
+  }
 
-    --sidebar-background: 255 10% 12%;
-    --sidebar-foreground: 255 10% 85%;
-    --sidebar-primary: 255 83% 76%;
-    --sidebar-primary-foreground: 255 10% 10%;
-    --sidebar-accent: 255 10% 20%;
-    --sidebar-accent-foreground: 255 10% 85%;
-    --sidebar-border: 255 10% 25%;
-    --sidebar-ring: 255 83% 76%;
+  .theme-blue {
+    --primary: 217 91% 60%;
+    --primary-foreground: 217 91% 98%;
+    --accent: 217 81% 70%;
+    --accent-foreground: 217 81% 10%;
+    --ring: 217 91% 60%;
+  }
+
+  .dark.theme-blue {
+    --primary: 217 91% 60%;
+    --primary-foreground: 217 91% 98%;
+    --accent: 217 81% 50%;
+    --accent-foreground: 217 81% 98%;
+    --ring: 217 91% 60%;
+  }
+
+  .theme-red {
+    --primary: 0 72% 51%;
+    --primary-foreground: 0 72% 98%;
+    --accent: 0 82% 61%;
+    --accent-foreground: 0 82% 10%;
+    --ring: 0 72% 51%;
+  }
+
+  .dark.theme-red {
+    --primary: 0 72% 51%;
+    --primary-foreground: 0 72% 98%;
+    --accent: 0 82% 61%;
+    --accent-foreground: 0 82% 98%;
+    --ring: 0 72% 51%;
+  }
+  
+  .theme-orange {
+    --primary: 25 95% 53%;
+    --primary-foreground: 25 95% 98%;
+    --accent: 25 85% 63%;
+    --accent-foreground: 25 85% 10%;
+    --ring: 25 95% 53%;
+  }
+
+  .dark.theme-orange {
+    --primary: 25 95% 53%;
+    --primary-foreground: 25 95% 98%;
+    --accent: 25 85% 63%;
+    --accent-foreground: 25 85% 98%;
+    --ring: 25 95% 53%;
+  }
+
+  .theme-yellow {
+    --primary: 48 96% 50%;
+    --primary-foreground: 48 96% 5%;
+    --accent: 48 86% 60%;
+    --accent-foreground: 48 86% 10%;
+    --ring: 48 96% 50%;
+  }
+
+  .dark.theme-yellow {
+    --primary: 48 96% 50%;
+    --primary-foreground: 48 96% 5%;
+    --accent: 48 86% 60%;
+    --accent-foreground: 48 86% 98%;
+    --ring: 48 96% 50%;
+  }
+
+  .theme-lavender {
+    --primary: 250 81% 65%;
+    --primary-foreground: 250 81% 98%;
+    --accent: 250 71% 75%;
+    --accent-foreground: 250 71% 10%;
+    --ring: 250 81% 65%;
+  }
+
+  .dark.theme-lavender {
+    --primary: 250 81% 65%;
+    --primary-foreground: 250 81% 98%;
+    --accent: 250 71% 75%;
+    --accent-foreground: 250 71% 98%;
+    --ring: 250 81% 65%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  :root {
+    --sidebar-background: 240 10% 99%;
+    --sidebar-foreground: 240 5% 20%;
+    --sidebar-primary: 142 76% 36%;
+    --sidebar-primary-foreground: 142 76% 96%;
+    --sidebar-accent: 240 10% 93%;
+    --sidebar-accent-foreground: 240 5% 20%;
+    --sidebar-border: 240 10% 90%;
+    --sidebar-ring: 142 76% 36%;
+  }
+
+  .dark {
+    --sidebar-background: 240 5% 12%;
+    --sidebar-foreground: 240 5% 85%;
+    --sidebar-primary: 142 76% 46%;
+    --sidebar-primary-foreground: 142 76% 6%;
+    --sidebar-accent: 240 5% 20%;
+    --sidebar-accent-foreground: 240 5% 85%;
+    --sidebar-border: 240 5% 25%;
+    --sidebar-ring: 142 76% 46%;
+  }
+
+  * {
+    @apply border-border;
   }
 }

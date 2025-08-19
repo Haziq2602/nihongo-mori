@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Leaf, BookOpen, BotMessageSquare, Home } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 
 function AppShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -103,17 +104,15 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
           </SidebarMenu>
 
         </SidebarContent>
-        <SidebarFooter>
-          {isMounted && isMobile && (
-            <div className="flex justify-start p-2">
-              <SidebarTrigger />
-            </div>
-          )}
-          {isMounted && !isMobile && (
-             <div className="flex justify-end p-2">
-              <SidebarTrigger />
-            </div>
-          )}
+        <SidebarFooter className='flex items-center gap-2'>
+            <ThemeSwitcher />
+            {isMounted && <div className='flex-grow'/>}
+            {isMounted && isMobile && (
+                <SidebarTrigger />
+            )}
+            {isMounted && !isMobile && (
+                <SidebarTrigger />
+            )}
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
