@@ -16,7 +16,6 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { Compass, BookOpen, BotMessageSquare, Home } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -25,7 +24,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <div className="flex items-center gap-2 p-2">
+           <div className="flex items-center gap-2 p-2">
             <Compass className="h-8 w-8 text-primary" />
             <div className="flex flex-col">
               <span className="text-lg font-semibold tracking-tight">Kana Compass</span>
@@ -96,10 +95,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         </SidebarContent>
         <SidebarFooter>
-          <SidebarTrigger />
+          <div className="md:hidden flex justify-start p-2">
+            <SidebarTrigger />
+          </div>
+          <div className="hidden md:flex justify-end p-2">
+            <SidebarTrigger />
+          </div>
         </SidebarFooter>
       </Sidebar>
-      <SidebarInset>{children}</SidebarInset>
+      <SidebarInset>
+        <header className="flex items-center justify-between p-4 md:hidden border-b">
+            <div className="flex items-center gap-2">
+                <Compass className="h-6 w-6 text-primary" />
+                <span className="font-semibold">Kana Compass</span>
+            </div>
+            <SidebarTrigger />
+        </header>
+        {children}
+      </SidebarInset>
     </SidebarProvider>
   );
 }

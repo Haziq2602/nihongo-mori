@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { KanaLesson, Kana } from '@/data/kana';
+import { KanaLesson } from '@/data/kana';
 import { useProgress } from '@/hooks/use-progress';
 import {
   Carousel,
@@ -29,6 +29,16 @@ export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
     lesson.kana.forEach((k) => addLearnedKana(k.kana));
     completeLesson(lesson.slug, kanaType);
     setView('completed');
+  };
+
+  const playAudio = (audioSrc: string) => {
+    try {
+      const audio = new Audio(audioSrc);
+      audio.play();
+    } catch (error) {
+      console.error('Failed to play audio:', error);
+      alert('Could not play audio. See console for details.');
+    }
   };
 
   if (view === 'quiz') {
@@ -100,9 +110,9 @@ export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
                                 <p className="text-xl font-semibold">{k.example.word}</p>
                                 <p className="text-muted-foreground">{k.example.reading} - {k.example.meaning}</p>
                             </div>
-                            <Button size="icon" variant="ghost" onClick={() => alert('Audio playback not implemented.')}>
+                            <Button size="icon" variant="ghost" onClick={() => playAudio(k.audio)}>
                                 <Volume2 />
-                                <span className="sr-only">Play audio</span>
+                                <span className="sr-only">Play audio for {k.example.word}</span>
                             </Button>
                           </div>
                         </CardContent>

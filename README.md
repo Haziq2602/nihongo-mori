@@ -51,7 +51,7 @@ Ready to run the project locally? Here’s how you can get set up.
 First, clone the project to your local machine.
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/Haziq2602/learn-kanas.git
 cd kana-compass
 ```
 
