@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Quiz } from '@/components/quiz';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 interface KanaLessonClientProps {
   lesson: KanaLesson;
@@ -38,8 +39,6 @@ export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
       audio.play();
     } catch (error) {
       console.error('Failed to play audio:', error);
-      // It's better to use a toast for errors, but for now, we'll keep it simple.
-      // toast({ title: 'Audio Error', description: 'Could not play audio.', variant: 'destructive' });
     }
   };
 
@@ -101,7 +100,10 @@ export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
                     <CardContent className="flex flex-col items-center justify-center p-6 gap-4">
                       <button
                         onClick={() => playAudio(k.audio)}
-                        className="text-8xl font-bold text-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        className={cn(
+                          'text-8xl font-bold text-primary rounded-lg p-4 transition-all duration-200',
+                          'border bg-card shadow-sm hover:shadow-md hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
+                        )}
                         aria-label={`Play sound for ${k.romaji}`}
                       >
                         {k.kana}
