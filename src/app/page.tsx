@@ -46,6 +46,9 @@ export default function LandingPage() {
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
               Master Japanese Kana, Effortlessly.
             </h1>
+            <h2 className="text-2xl font-medium text-primary tracking-widest sm:text-3xl">
+              にほんごのもり
+            </h2>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
               Nihongo Mori is an interactive learning experience designed to guide you through the first crucial steps of learning Japanese: mastering Hiragana and Katakana.
             </p>
