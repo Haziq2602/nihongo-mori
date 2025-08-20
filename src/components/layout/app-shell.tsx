@@ -17,7 +17,7 @@ import {
   SidebarInset,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Leaf, BookOpen, BotMessageSquare, Home, PanelLeft, LogOut } from 'lucide-react';
+import { Leaf, BookOpen, BotMessageSquare, Home, PanelLeft, LogOut, User } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { ModeToggle } from '../mode-toggle';
@@ -115,20 +115,30 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-
         </SidebarContent>
-        <SidebarFooter className='flex items-center gap-2'>
-            <ThemeSwitcher />
-            <ModeToggle />
-            {isMounted && <div className='flex-grow'/>}
-             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={logout}>
-                <LogOut />
-                <span className="sr-only">Sign Out</span>
-             </Button>
+        <SidebarFooter>
+            <div className="mt-auto">
+              <div className="px-4 mb-2 text-xs font-medium text-muted-foreground">USER</div>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                    <div className="flex items-center gap-2 p-2">
+                        <ThemeSwitcher />
+                        <ModeToggle />
+                        <div className='flex-grow'/>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={logout}>
+                            <LogOut />
+                            <span className="sr-only">Sign Out</span>
+                        </Button>
+                    </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </div>
             {isMounted && !isMobile && (
-                <SidebarTrigger>
-                   <PanelLeft />
-                </SidebarTrigger>
+                <div className="p-2 flex justify-end">
+                    <SidebarTrigger>
+                    <PanelLeft />
+                    </SidebarTrigger>
+                </div>
             )}
         </SidebarFooter>
       </Sidebar>

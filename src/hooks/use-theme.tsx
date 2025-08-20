@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -5,6 +6,7 @@ import * as React from 'react';
 const COLOR_THEME_STORAGE_KEY = 'nihongo-mori-color-theme';
 const THEME_STORAGE_KEY = 'nihongo-mori-theme';
 const DEFAULT_COLOR_THEME = 'theme-green';
+const DEFAULT_THEME = 'dark';
 
 type ColorTheme = 'theme-green' | 'theme-blue' | 'theme-red' | 'theme-orange' | 'theme-yellow' | 'theme-lavender';
 type Theme = 'dark' | 'light' | 'system';
@@ -19,7 +21,7 @@ interface ThemeProviderState {
 const ThemeProviderContext = React.createContext<ThemeProviderState>({
   colorTheme: DEFAULT_COLOR_THEME,
   setColorTheme: () => null,
-  theme: 'system',
+  theme: DEFAULT_THEME,
   setTheme: () => null,
 });
 
@@ -38,27 +40,32 @@ export function ThemeProvider({
 
   const [theme, setTheme] = React.useState<Theme>(() => {
     if (typeof window === 'undefined') {
-      return 'system';
+      return DEFAULT_THEME;
     }
-    return (localStorage.getItem(THEME_STORAGE_KEY) as Theme) || 'system';
+    return (localStorage.getItem(THEME_STORAGE_KEY) as Theme) || DEFAULT_THEME;
   });
 
   React.useEffect(() => {
     const root = window.document.documentElement;
 
-    // Remove all theme classes
+    // This ensures that the class is not removed on the initial render.
+    // The class is set on the <html> tag in layout.tsx to prevent flash.
+    root.classList.remove('light', 'dark');
+
     const classesToRemove = Array.from(root.classList).filter(cls => cls.startsWith('theme-'));
     root.classList.remove(...classesToRemove);
-
+    
     if (colorTheme) {
       root.classList.add(colorTheme);
     }
+    
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.classList.add(systemTheme);
+      return;
+    }
 
-    const isDark =
-      theme === 'dark' ||
-      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      
-    root.classList.toggle('dark', isDark);
+    root.classList.add(theme);
 
   }, [colorTheme, theme]);
 
@@ -90,5 +97,3 @@ export const useTheme = () => {
 
   return context;
 };
-
-    
