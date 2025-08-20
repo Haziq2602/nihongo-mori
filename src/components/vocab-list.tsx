@@ -17,6 +17,8 @@ import { LoadingIndicator } from './loading-indicator';
 import { Lock, CheckCircle2, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { Terminal } from 'lucide-react';
 
 const allLessons = {
   hiragana: hiraganaLessons,
@@ -24,7 +26,8 @@ const allLessons = {
 };
 
 export function VocabList() {
-  const { isVocabLessonUnlocked, loading, completedVocabLessons } = useProgress();
+  const { isVocabLessonUnlocked, loading, completedVocabLessons, haveAllHiraganaKanaBeenLearned } = useProgress();
+  const allHiraganaLearned = useMemo(() => haveAllHiraganaKanaBeenLearned(), [haveAllHiraganaKanaBeenLearned]);
 
   const lessonData = useMemo(() => {
     if (loading) return { hiragana: [], katakana: [] };
@@ -55,21 +58,6 @@ export function VocabList() {
 
   if (loading) {
     return <LoadingIndicator />;
-  }
-
-  const hasNoUnlocked = lessonData.hiragana.every(l => !l.unlocked) && lessonData.katakana.every(l => !l.unlocked);
-
-  if (hasNoUnlocked) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>No Vocabulary Unlocked</CardTitle>
-          <CardDescription>
-            Complete your first kana lesson to unlock its vocabulary list and quiz.
-          </CardDescription>
-        </CardHeader>
-      </Card>
-    )
   }
 
   const renderLessonGrid = (lessons: typeof lessonData.hiragana) => (
@@ -113,7 +101,17 @@ export function VocabList() {
         {renderLessonGrid(lessonData.hiragana)}
       </TabsContent>
       <TabsContent value="katakana">
-        {renderLessonGrid(lessonData.katakana)}
+        {!allHiraganaLearned ? (
+           <Alert>
+             <Terminal className="h-4 w-4" />
+             <AlertTitle>Prerequisite Not Met</AlertTitle>
+             <AlertDescription>
+              You must master all Hiragana characters before you can begin learning Katakana vocabulary. Keep up the great work!
+             </AlertDescription>
+           </Alert>
+        ) : (
+          renderLessonGrid(lessonData.katakana)
+        )}
       </TabsContent>
     </Tabs>
   );

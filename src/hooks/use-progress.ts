@@ -133,45 +133,75 @@ export function useProgress() {
       const progressRef = getProgressRef();
       if (!progressRef) return;
 
-      // Mark the current vocab lesson as passed/completed
       const lessonId = `${lessonSlug}-${kanaType}`;
+      
+      const vocabLessonsToComplete = new Set(progress.completedVocabLessons);
+      vocabLessonsToComplete.add(lessonId);
   
+      // Unlock the next vocab lesson in the sequence
+      const lessons = kanaType === 'hiragana' ? hiraganaLessons : katakanaLessons;
+      const currentLessonIndex = lessons.findIndex(l => l.slug === lessonSlug);
+      if (currentLessonIndex !== -1 && currentLessonIndex < lessons.length - 1) {
+          const nextLesson = lessons[currentLessonIndex + 1];
+          if (nextLesson.vocabulary && nextLesson.vocabulary.length > 0) {
+            const nextLessonId = `${nextLesson.slug}-${kanaType}`;
+            vocabLessonsToComplete.add(nextLessonId);
+          }
+      }
+
       setProgress(current => ({
           ...current,
-          completedVocabLessons: Array.from(new Set([...current.completedVocabLessons, lessonId])),
+          completedVocabLessons: Array.from(vocabLessonsToComplete),
       }));
 
       await updateDoc(progressRef, {
-          completedVocabLessons: arrayUnion(lessonId),
+          completedVocabLessons: Array.from(vocabLessonsToComplete),
           lastUpdated: serverTimestamp(),
       });
 
-  }, [getProgressRef]);
+  }, [getProgressRef, progress.completedVocabLessons]);
 
   const isLessonUnlocked = useCallback((lessonSlug: string, kanaType: 'hiragana' | 'katakana') => {
     const lessonId = `${lessonSlug}-${kanaType}`;
     return progress.completedLessons.includes(lessonId);
   }, [progress.completedLessons]);
 
+  const haveAllHiraganaKanaBeenLearned = useCallback(() => {
+    const allHiraganaKana = hiraganaLessons.flatMap(l => l.kana.map(k => k.kana));
+    return allHiraganaKana.every(kana => progress.learnedKana.includes(kana));
+  }, [progress.learnedKana]);
+  
   const isVocabLessonUnlocked = useCallback((lessonSlug: string, kanaType: 'hiragana' | 'katakana') => {
-    // A vocab lesson is unlocked if the corresponding kana lesson is completed.
-    const kanaLessonId = `${lessonSlug}-${kanaType}`;
-    
     const lessons = kanaType === 'hiragana' ? hiraganaLessons : katakanaLessons;
-    const currentLessonIndex = lessons.findIndex(l => l.slug === lessonSlug);
+    const lessonId = `${lessonSlug}-${kanaType}`;
+    const lessonIndex = lessons.findIndex(l => l.slug === lessonSlug);
 
-    // The very first lesson is always unlocked.
-    if (currentLessonIndex === 0) return true;
-
-    // For subsequent lessons, the previous *kana* lesson must be completed.
-    if (currentLessonIndex > 0) {
-        const prevLesson = lessons[currentLessonIndex - 1];
-        const prevKanaLessonId = `${prevLesson.slug}-${kanaType}`;
-        return progress.completedLessons.includes(prevKanaLessonId);
+    // The very first Hiragana vocab lesson is unlocked if its corresponding kana lesson is completed.
+    if (kanaType === 'hiragana' && lessonIndex === 0) {
+      return progress.completedLessons.includes('vowels-hiragana');
     }
 
-    return progress.completedLessons.includes(kanaLessonId);
-  }, [progress.completedLessons]);
+    // All Katakana vocab lessons are locked until all Hiragana kana are learned.
+    if (kanaType === 'katakana') {
+      if (!haveAllHiraganaKanaBeenLearned()) {
+        return false;
+      }
+       // Once all Hiragana are learned, the first Katakana vocab lesson is unlocked if its kana lesson is passed.
+       if (lessonIndex === 0) {
+        return progress.completedLessons.includes('vowels-katakana');
+      }
+    }
+
+    // For subsequent lessons (both Hiragana and Katakana), the previous vocab lesson's quiz must be passed.
+    if (lessonIndex > 0) {
+        const prevLesson = lessons[lessonIndex - 1];
+        const prevVocabLessonId = `${prevLesson.slug}-${kanaType}`;
+        return progress.completedVocabLessons.includes(prevVocabLessonId);
+    }
+    
+    return false;
+
+  }, [progress.completedLessons, progress.completedVocabLessons, haveAllHiraganaKanaBeenLearned]);
 
   const getLearnedKanaSet = useCallback(() => {
     return new Set(progress.learnedKana);
@@ -223,5 +253,6 @@ export function useProgress() {
     isVocabLessonUnlocked,
     addQuizResult,
     getStats,
+    haveAllHiraganaKanaBeenLearned,
   };
 }
