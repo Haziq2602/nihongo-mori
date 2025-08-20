@@ -72,11 +72,11 @@ export const withAuth = <P extends object>(Component: React.ComponentType<P>) =>
 
 
     if (loading && !unprotectedRoutes.includes(pathname)) {
-      return <SplashScreen isBrandAnimation={false} />;
+      return <div className="h-svh w-full"><SplashScreen isBrandAnimation={false} /></div>;
     }
 
     if (!user && !unprotectedRoutes.includes(pathname)) {
-        return <SplashScreen isBrandAnimation={false}/>;
+        return <div className="h-svh w-full"><SplashScreen isBrandAnimation={false}/></div>;
     }
 
 

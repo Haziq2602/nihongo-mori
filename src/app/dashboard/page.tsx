@@ -64,7 +64,7 @@ function Dashboard() {
   return (
     <AppShell>
       <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-        <div className="flex flex-col gap-2 animate-fade-in-up">
+        <div className="flex flex-col gap-2 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
           <h1 className="text-3xl font-bold tracking-tight">Welcome to Nihongo Mori</h1>
           <p className="text-muted-foreground">
             Your guide to mastering Japanese Hiragana and Katakana.
@@ -74,7 +74,7 @@ function Dashboard() {
           {cards.map((card, index) => (
             <Card key={card.title} className={cn(
               "flex flex-col transition-transform duration-300 hover:scale-105 animate-fade-in-up",
-            )} style={{ animationDelay: `${index * 100 + 100}ms` }}>
+            )} style={{ animationDelay: `${index * 100 + 200}ms` }}>
               <CardHeader>
                 <div className="flex items-center gap-4">
                   <div className={cn(

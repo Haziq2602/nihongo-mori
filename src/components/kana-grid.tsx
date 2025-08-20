@@ -47,13 +47,13 @@ export function KanaGrid({ lessons, kanaType }: KanaGridProps) {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in-up">
-      {lessons.map((lesson) => {
+    <div className="space-y-8">
+      {lessons.map((lesson, lessonIndex) => {
         const unlocked = isLessonUnlocked(lesson.slug, kanaType);
         const allKanaInLessonLearned = lesson.kana.every(k => learnedKana.has(k.kana));
 
         return (
-          <div key={lesson.slug}>
+          <div key={lesson.slug} className="animate-fade-in-up" style={{ animationDelay: `${lessonIndex * 150}ms`}}>
             <div className="flex items-center gap-4 mb-4">
               <h2 className="text-2xl font-bold">{lesson.name}</h2>
               {isMounted && !unlocked && <Lock className="h-5 w-5 text-muted-foreground" />}
@@ -68,10 +68,9 @@ export function KanaGrid({ lessons, kanaType }: KanaGridProps) {
                     href={unlocked ? `/learn/${kanaType}/${lesson.slug}` : '#'}
                     aria-disabled={!unlocked}
                     className={cn(
-                      'transition-transform duration-200 animate-fade-in-up',
+                      'transition-transform duration-200',
                       unlocked ? 'hover:scale-105' : 'cursor-not-allowed'
                     )}
-                    style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <Card
                       className={cn(

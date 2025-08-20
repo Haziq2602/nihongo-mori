@@ -172,7 +172,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       const timer = setTimeout(() => {
         setShowSplash(false);
         sessionStorage.setItem('splashShown', 'true');
-      }, 2000); 
+      }, 1800); 
       return () => clearTimeout(timer);
     }
   }, []);
@@ -180,7 +180,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       {showSplash && <SplashScreen />}
-      <AppShellContent>{children}</AppShellContent>
+      <div className={showSplash ? 'opacity-0' : 'opacity-100 transition-opacity duration-300'}>
+        <AppShellContent>{children}</AppShellContent>
+      </div>
     </SidebarProvider>
   );
 }
