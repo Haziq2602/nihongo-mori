@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useProgress } from '@/hooks/use-progress';
 import { hiraganaLessons, katakanaLessons } from '@/data/kana';
@@ -17,8 +17,15 @@ import { LoadingIndicator } from './loading-indicator';
 import { Lock, CheckCircle2, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-import { Terminal } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const allLessons = {
   hiragana: hiraganaLessons,
@@ -28,6 +35,9 @@ const allLessons = {
 export function VocabList() {
   const { isVocabLessonUnlocked, loading, completedVocabLessons, haveAllHiraganaKanaBeenLearned } = useProgress();
   const allHiraganaLearned = useMemo(() => haveAllHiraganaKanaBeenLearned(), [haveAllHiraganaKanaBeenLearned]);
+  const [activeTab, setActiveTab] = useState('hiragana');
+  
+  const showKatakanaLockDialog = !allHiraganaLearned && activeTab === 'katakana';
 
   const lessonData = useMemo(() => {
     if (loading) return { hiragana: [], katakana: [] };
@@ -92,7 +102,7 @@ export function VocabList() {
 
 
   return (
-    <Tabs defaultValue="hiragana" className="w-full">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="hiragana">Hiragana</TabsTrigger>
         <TabsTrigger value="katakana">Katakana</TabsTrigger>
@@ -101,17 +111,22 @@ export function VocabList() {
         {renderLessonGrid(lessonData.hiragana)}
       </TabsContent>
       <TabsContent value="katakana">
-        {!allHiraganaLearned ? (
-           <Alert>
-             <Terminal className="h-4 w-4" />
-             <AlertTitle>Prerequisite Not Met</AlertTitle>
-             <AlertDescription>
-              You must master all Hiragana characters before you can begin learning Katakana vocabulary. Keep up the great work!
-             </AlertDescription>
-           </Alert>
-        ) : (
-          renderLessonGrid(lessonData.katakana)
-        )}
+        {renderLessonGrid(lessonData.katakana)}
+        <AlertDialog open={showKatakanaLockDialog}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Katakana Vocabulary Locked</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        You must first master all the Hiragana characters before moving on to Katakana vocabulary. Keep up the great work!
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogAction onClick={() => setActiveTab('hiragana')}>
+                        OK
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
       </TabsContent>
     </Tabs>
   );
