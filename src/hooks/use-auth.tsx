@@ -59,7 +59,7 @@ export const withAuth = <P extends object>(Component: React.ComponentType<P>) =>
 
     useEffect(() => {
       if (!loading && !user && !unprotectedRoutes.includes(pathname)) {
-        router.push('/login');
+        router.push('/');
       }
     }, [user, loading, router, pathname]);
     
