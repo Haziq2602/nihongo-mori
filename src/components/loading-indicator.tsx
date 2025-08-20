@@ -4,7 +4,7 @@
 import { Leaf } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export function SplashScreen() {
+export function LoadingIndicator() {
   return (
     <div
       className={cn(
@@ -12,7 +12,7 @@ export function SplashScreen() {
       )}
     >
       <div className={cn(
-        "flex items-center gap-4"
+        "flex items-center gap-4 animate-pulse"
       )}>
         <Leaf className="h-16 w-16 text-primary" />
         <span className="text-4xl font-bold tracking-tight">Nihongo Mori</span>

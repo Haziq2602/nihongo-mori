@@ -5,7 +5,7 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { User, onAuthStateChanged, signOut as firebaseSignOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter, usePathname } from 'next/navigation';
-import { SplashScreen } from '@/components/splash-screen';
+import { LoadingIndicator } from '@/components/loading-indicator';
 
 interface AuthContextType {
   user: User | null;
@@ -72,13 +72,13 @@ export const withAuth = <P extends object>(Component: React.ComponentType<P>) =>
 
 
     if (loading && !unprotectedRoutes.includes(pathname)) {
-      return <SplashScreen />;
+      return <LoadingIndicator />;
     }
 
     if (!user && !unprotectedRoutes.includes(pathname)) {
       // This state is brief while the redirect to '/' happens.
-      // Showing the splash screen prevents a flash of unstyled content.
-      return <SplashScreen />;
+      // Showing the loading indicator prevents a flash of unstyled content.
+      return <LoadingIndicator />;
     }
 
     return <Component {...props} />;
