@@ -17,7 +17,8 @@ interface QuizResult {
 interface ProgressData {
   learnedKana: string[];
   completedLessons: string[];
-  quizLog: QuizResult[]; // Changed from quizResults to quizLog for clarity
+  completedVocabLessons: string[];
+  quizLog: QuizResult[];
   lastUpdated: any;
 }
 
@@ -29,6 +30,7 @@ interface QuizStats {
 const defaultProgress: ProgressData = { 
   learnedKana: [], 
   completedLessons: ['vowels-hiragana'],
+  completedVocabLessons: ['vowels-hiragana'], // Unlock the first vocab lesson by default
   quizLog: [],
   lastUpdated: null
 };
@@ -47,23 +49,35 @@ export function useProgress() {
   useEffect(() => {
     const fetchProgress = async () => {
       if (!user) {
+        setProgress(defaultProgress);
         setLoading(false);
         return;
       }
       setLoading(true);
       const progressRef = getProgressRef();
       if (progressRef) {
-        const docSnap = await getDoc(progressRef);
-        if (docSnap.exists()) {
-          setProgress(docSnap.data() as ProgressData);
-        } else {
-          // Create initial progress for new user
-          const initialProgress: ProgressData = {
-            ...defaultProgress,
-            lastUpdated: serverTimestamp(),
-          };
-          await setDoc(progressRef, initialProgress);
-          setProgress(initialProgress);
+        try {
+          const docSnap = await getDoc(progressRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data() as ProgressData;
+            // Ensure completedVocabLessons exists to avoid issues with older data structures
+            if (!data.completedVocabLessons) {
+              data.completedVocabLessons = ['vowels-hiragana'];
+            }
+            setProgress(data);
+          } else {
+            // Create initial progress for new user
+            const initialProgress: ProgressData = {
+              ...defaultProgress,
+              lastUpdated: serverTimestamp(),
+            };
+            await setDoc(progressRef, initialProgress);
+            setProgress(initialProgress);
+          }
+        } catch (error) {
+            console.error("Error fetching user progress:", error);
+            // Fallback to default progress on error
+            setProgress(defaultProgress);
         }
       }
       setLoading(false);
@@ -92,24 +106,61 @@ export function useProgress() {
     const currentLessonIndex = lessons.findIndex(l => l.slug === lessonSlug);
     
     let lessonsToComplete = [lessonId];
+    // Unlock next kana lesson
     if (currentLessonIndex !== -1 && currentLessonIndex < lessons.length - 1) {
       const nextLesson = lessons[currentLessonIndex + 1];
       const nextLessonId = `${nextLesson.slug}-${kanaType}`;
       lessonsToComplete.push(nextLessonId);
     }
+     // Also unlock the corresponding vocab lesson
+    const vocabLessonId = `${lessonSlug}-${kanaType}`;
     
-    setProgress(current => ({ ...current, completedLessons: Array.from(new Set([...current.completedLessons, ...lessonsToComplete])) }));
+    setProgress(current => ({ 
+        ...current, 
+        completedLessons: Array.from(new Set([...current.completedLessons, ...lessonsToComplete])),
+        completedVocabLessons: Array.from(new Set([...current.completedVocabLessons, vocabLessonId]))
+    }));
+    
     await updateDoc(progressRef, {
         completedLessons: arrayUnion(...lessonsToComplete),
+        completedVocabLessons: arrayUnion(vocabLessonId),
         lastUpdated: serverTimestamp(),
     });
 
+  }, [getProgressRef]);
+
+  const completeVocabLesson = useCallback(async (lessonSlug: string, kanaType: 'hiragana' | 'katakana') => {
+      const progressRef = getProgressRef();
+      if (!progressRef) return;
+  
+      const lessons = kanaType === 'hiragana' ? hiraganaLessons : katakanaLessons;
+      const currentLessonIndex = lessons.findIndex(l => l.slug === lessonSlug);
+  
+      if (currentLessonIndex !== -1 && currentLessonIndex < lessons.length - 1) {
+          const nextLesson = lessons[currentLessonIndex + 1];
+          const nextVocabLessonId = `${nextLesson.slug}-${kanaType}`;
+          
+          setProgress(current => ({
+              ...current,
+              completedVocabLessons: Array.from(new Set([...current.completedVocabLessons, nextVocabLessonId])),
+          }));
+
+          await updateDoc(progressRef, {
+              completedVocabLessons: arrayUnion(nextVocabLessonId),
+              lastUpdated: serverTimestamp(),
+          });
+      }
   }, [getProgressRef]);
 
   const isLessonUnlocked = useCallback((lessonSlug: string, kanaType: 'hiragana' | 'katakana') => {
     const lessonId = `${lessonSlug}-${kanaType}`;
     return progress.completedLessons.includes(lessonId);
   }, [progress.completedLessons]);
+
+  const isVocabLessonUnlocked = useCallback((lessonSlug: string, kanaType: 'hiragana' | 'katakana') => {
+    const lessonId = `${lessonSlug}-${kanaType}`;
+    return progress.completedVocabLessons.includes(lessonId);
+  }, [progress.completedVocabLessons]);
 
   const getLearnedKanaSet = useCallback(() => {
     return new Set(progress.learnedKana);
@@ -131,9 +182,6 @@ export function useProgress() {
       withSound: { correct: 0, total: 0 },
       noSound: { correct: 0, total: 0 },
     };
-
-    // Note: this calculates stats based on ALL quiz history.
-    // This could be scoped to a specific quiz session if needed.
     (progress.quizLog || []).forEach(result => {
         if (result.audioUsed) {
             stats.withSound.total++;
@@ -147,7 +195,6 @@ export function useProgress() {
             }
         }
     });
-
     return stats;
   }, [progress.quizLog]);
 
@@ -156,10 +203,13 @@ export function useProgress() {
     loading,
     learnedKana: getLearnedKanaSet(),
     completedLessons: new Set(progress.completedLessons),
+    completedVocabLessons: new Set(progress.completedVocabLessons),
     quizLog: progress.quizLog || [],
     addLearnedKana,
     completeLesson,
+    completeVocabLesson,
     isLessonUnlocked,
+    isVocabLessonUnlocked,
     addQuizResult,
     getStats,
   };

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { VocabList } from '@/components/word-generator';
+import { VocabList } from '@/components/vocab-list';
 import { AppShell } from '@/components/layout/app-shell';
 import { withAuth } from '@/hooks/use-auth';
 
@@ -12,7 +12,7 @@ function VocabPage() {
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold tracking-tight">Learn Vocabulary</h1>
           <p className="text-muted-foreground">
-            Practice with words from the lessons you've unlocked. Click a word to hear its pronunciation.
+            Practice with words from the lessons you've unlocked. Pass the quiz to unlock the next set of words.
           </p>
         </div>
         <VocabList />
