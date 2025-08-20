@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -7,6 +8,9 @@ import { AuthProvider } from '@/hooks/use-auth';
 export const metadata: Metadata = {
   title: 'Nihongo Mori',
   description: 'Learn basic Japanese (Hiragana and Katakana) with Nihongo Mori.',
+  icons: {
+    icon: '/nihongo-mori-logo.png',
+  },
 };
 
 export default function RootLayout({
