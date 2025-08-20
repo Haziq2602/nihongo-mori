@@ -17,10 +17,9 @@ import {
   SidebarInset,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Leaf, BookOpen, BotMessageSquare, Home, PanelLeft, LogOut, Settings } from 'lucide-react';
+import { Leaf, BookOpen, Home, PanelLeft, LogOut, Settings, Sparkles } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useAuth } from '@/hooks/use-auth';
-import { Button } from '../ui/button';
 
 function AppShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -102,12 +101,12 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={pathname.startsWith('/tools/word-generator')}
-                tooltip="Word Generator"
+                isActive={pathname.startsWith('/tools/vocab')}
+                tooltip="Learn Vocabs"
               >
-                <Link href="/tools/word-generator">
-                  <BotMessageSquare />
-                  <span>AI Words</span>
+                <Link href="/tools/vocab">
+                  <Sparkles />
+                  <span>Learn Vocabs</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

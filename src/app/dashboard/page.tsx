@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useProgress } from '@/hooks/use-progress';
-import { ArrowRight, BookOpen, BotMessageSquare } from 'lucide-react';
+import { ArrowRight, BookOpen, BotMessageSquare, Sparkles } from 'lucide-react';
 import { hiraganaLessons, katakanaLessons } from '@/data/kana';
 import { useEffect, useState } from 'react';
 import { AppShell } from '@/components/layout/app-shell';
@@ -59,11 +59,11 @@ function Dashboard() {
       icon: <BookOpen className="h-6 w-6" />,
     },
     {
-      title: 'AI Word Generator',
-      description: "Generate example words with the Kana you've learned.",
+      title: 'Learn Vocabs',
+      description: "Practice with words from the lessons you've learned.",
       progress: null,
-      href: '/tools/word-generator',
-      icon: <BotMessageSquare className="h-6 w-6" />,
+      href: '/tools/vocab',
+      icon: <Sparkles className="h-6 w-6" />,
     },
   ]
 
@@ -78,10 +78,10 @@ function Dashboard() {
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {cards.map((card) => (
-            <Card key={card.title}>
+            <Card key={card.title} className="flex flex-col">
               <CardHeader>
                 <div className="flex items-center gap-4">
-                  <div className={`rounded-lg p-3 ${card.title.includes('Generator') ? 'bg-accent/10 text-accent' : 'bg-primary/10 text-primary'}`}>
+                  <div className={`rounded-lg p-3 ${card.title.includes('Vocabs') ? 'bg-accent/10 text-accent' : 'bg-primary/10 text-primary'}`}>
                     {card.icon}
                   </div>
                   <div className="flex flex-col gap-1">
@@ -90,11 +90,11 @@ function Dashboard() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="flex flex-col gap-4">
+              <CardContent className="flex flex-1 flex-col gap-4">
                 {card.progress !== null && <Progress value={card.progress} aria-label={`${card.progress.toFixed(0)}% ${card.title} learned`} />}
-                <Button asChild variant={card.title.includes('Generator') ? 'secondary' : 'default'} className="w-full">
+                <Button asChild variant={card.title.includes('Vocabs') ? 'secondary' : 'default'} className="mt-auto w-full">
                   <Link href={card.href}>
-                    {card.title.includes('Generator') ? 'Go to Generator' : 'Start Learning'}
+                    {card.title.includes('Vocabs') ? 'Go to Vocabs' : 'Start Learning'}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>

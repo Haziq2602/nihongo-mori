@@ -5,12 +5,11 @@ import Link from 'next/link';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, BookOpen, BotMessageSquare, Leaf } from 'lucide-react';
+import { ArrowRight, BookOpen, Leaf, Sparkles } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 
 export default function LandingPage() {
@@ -93,12 +92,12 @@ export default function LandingPage() {
               <Card className="transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
                 <CardHeader className="flex flex-row items-center gap-4">
                   <div className="rounded-lg bg-primary/10 p-3 text-primary">
-                    <BotMessageSquare className="h-6 w-6" />
+                    <Sparkles className="h-6 w-6" />
                   </div>
-                  <CardTitle>Word Generator</CardTitle>
+                  <CardTitle>Learn Vocabs</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">Use the kana you've mastered to generate simple, custom example words from our vocabulary list.</p>
+                  <p className="text-muted-foreground">Practice with a comprehensive vocabulary list categorized by the lessons you've learned.</p>
                 </CardContent>
               </Card>
             </div>
