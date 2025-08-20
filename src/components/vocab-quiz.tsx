@@ -73,9 +73,7 @@ export function VocabQuiz({ lesson, kanaType }: VocabQuizProps) {
   const currentQuestion = questions[currentQuestionIndex];
   const progress = (currentQuestionIndex / questions.length) * 100;
   const passPercentage = 80;
-  const finalScorePercentage = (score / questions.length) * 100;
-  const passed = finalScorePercentage >= passPercentage;
-
+  
   const handleAnswer = (answer: string) => {
     if (selectedAnswer) return;
 
@@ -95,14 +93,18 @@ export function VocabQuiz({ lesson, kanaType }: VocabQuizProps) {
         setSelectedAnswer(null);
         setIsCorrect(null);
       } else {
-        setIsFinished(true);
-        // We need to check the score at the end of the quiz
-        if (((score + (correct ? 1 : 0)) / questions.length) * 100 >= passPercentage) {
+        // This is the last question
+        const finalScore = correct ? score + 1 : score;
+        if ((finalScore / questions.length) * 100 >= passPercentage) {
             completeVocabLesson(lesson.slug, kanaType);
         }
+        setIsFinished(true);
       }
     }, 1200);
   };
+
+  const finalScorePercentage = (score / questions.length) * 100;
+  const passed = finalScorePercentage >= passPercentage;
 
   const getButtonClass = (option: string) => {
     if (!selectedAnswer) return 'bg-secondary text-secondary-foreground';
@@ -124,23 +126,27 @@ export function VocabQuiz({ lesson, kanaType }: VocabQuizProps) {
   };
 
   if (isFinished) {
+    // We need to re-calculate here because state updates might not be flushed
+    const finalScoreOnFinish = (score / questions.length) * 100;
+    const didPassOnFinish = finalScoreOnFinish >= passPercentage;
+
     return (
         <Card className="w-full max-w-lg text-center">
             <CardHeader>
                 <CardTitle className="text-2xl">Quiz Complete!</CardTitle>
-                <CardDescription>You scored {finalScorePercentage.toFixed(0)}% for {lesson.name}</CardDescription>
+                <CardDescription>You scored {finalScoreOnFinish.toFixed(0)}% for {lesson.name}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
                 {isSubmitting ? <LoadingIndicator /> : (
                   <>
-                    {passed ? (
+                    {didPassOnFinish ? (
                         <p className="text-green-600 font-semibold">Congratulations! You passed the quiz and unlocked the next vocabulary set.</p>
                     ) : (
                         <p className="text-destructive font-semibold">Nice try! You need {passPercentage}% to pass. Please review the words and try again.</p>
                     )}
                     <div className="flex justify-center gap-4">
                         <Button variant="outline" onClick={() => router.push('/tools/vocab')}>Back to Vocab Lessons</Button>
-                        {!passed && <Button onClick={() => window.location.reload()}>Try Again</Button>}
+                        {!didPassOnFinish && <Button onClick={() => window.location.reload()}>Try Again</Button>}
                     </div>
                   </>
                 )}

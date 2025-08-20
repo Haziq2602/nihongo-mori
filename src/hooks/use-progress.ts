@@ -138,16 +138,7 @@ export function useProgress() {
       const vocabLessonsToComplete = new Set(progress.completedVocabLessons);
       vocabLessonsToComplete.add(lessonId);
   
-      // Unlock the next vocab lesson in the sequence
-      const lessons = kanaType === 'hiragana' ? hiraganaLessons : katakanaLessons;
-      const currentLessonIndex = lessons.findIndex(l => l.slug === lessonSlug);
-      if (currentLessonIndex !== -1 && currentLessonIndex < lessons.length - 1) {
-          const nextLesson = lessons[currentLessonIndex + 1];
-          if (nextLesson.vocabulary && nextLesson.vocabulary.length > 0) {
-            const nextLessonId = `${nextLesson.slug}-${kanaType}`;
-            vocabLessonsToComplete.add(nextLessonId);
-          }
-      }
+      // This function is now only for marking completion. Unlocking is handled in `isVocabLessonUnlocked`.
 
       setProgress(current => ({
           ...current,
@@ -173,29 +164,31 @@ export function useProgress() {
   
   const isVocabLessonUnlocked = useCallback((lessonSlug: string, kanaType: 'hiragana' | 'katakana') => {
     const lessons = kanaType === 'hiragana' ? hiraganaLessons : katakanaLessons;
-    const lessonId = `${lessonSlug}-${kanaType}`;
     const lessonIndex = lessons.findIndex(l => l.slug === lessonSlug);
+    const kanaLessonId = `${lessonSlug}-${kanaType}`;
 
-    // The very first Hiragana vocab lesson is unlocked if its corresponding kana lesson is completed.
-    if (kanaType === 'hiragana' && lessonIndex === 0) {
-      return progress.completedLessons.includes('vowels-hiragana');
+    // All Katakana vocab is locked until all Hiragana kana are learned.
+    if (kanaType === 'katakana' && !haveAllHiraganaKanaBeenLearned()) {
+      return false;
     }
 
-    // All Katakana vocab lessons are locked until all Hiragana kana are learned.
-    if (kanaType === 'katakana') {
-      if (!haveAllHiraganaKanaBeenLearned()) {
-        return false;
-      }
-       // Once all Hiragana are learned, the first Katakana vocab lesson is unlocked if its kana lesson is passed.
-       if (lessonIndex === 0) {
-        return progress.completedLessons.includes('vowels-katakana');
-      }
+    if (lessonIndex === 0) {
+      // The first lesson (of either type) is unlocked if its corresponding kana lesson is completed.
+      return progress.completedLessons.includes(kanaLessonId);
     }
 
-    // For subsequent lessons (both Hiragana and Katakana), the previous vocab lesson's quiz must be passed.
+    // For subsequent lessons, the previous vocab lesson must be completed.
     if (lessonIndex > 0) {
         const prevLesson = lessons[lessonIndex - 1];
-        const prevVocabLessonId = `${prevLesson.slug}-${kanaType}`;
+        // Ensure the previous lesson actually has vocabulary. If not, check the one before it.
+        let previousVocabLesson = prevLesson;
+        let prevIndex = lessonIndex - 1;
+        while(prevIndex > 0 && (!previousVocabLesson.vocabulary || previousVocabLesson.vocabulary.length === 0)) {
+          prevIndex--;
+          previousVocabLesson = lessons[prevIndex];
+        }
+
+        const prevVocabLessonId = `${previousVocabLesson.slug}-${kanaType}`;
         return progress.completedVocabLessons.includes(prevVocabLessonId);
     }
     
