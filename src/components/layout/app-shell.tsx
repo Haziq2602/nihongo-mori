@@ -17,10 +17,8 @@ import {
   SidebarInset,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Leaf, BookOpen, BotMessageSquare, Home, PanelLeft, LogOut, User } from 'lucide-react';
+import { Leaf, BookOpen, BotMessageSquare, Home, PanelLeft, LogOut, Settings } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { ThemeSwitcher } from '@/components/theme-switcher';
-import { ModeToggle } from '../mode-toggle';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '../ui/button';
 
@@ -120,15 +118,25 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
               <div className="px-4 mb-2 text-xs font-medium text-muted-foreground">USER</div>
               <SidebarMenu>
                  <SidebarMenuItem>
-                    <div className="flex items-center gap-2 p-2">
-                        <ThemeSwitcher />
-                        <ModeToggle />
-                        <div className='flex-grow'/>
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={logout}>
-                            <LogOut />
-                            <span className="sr-only">Sign Out</span>
-                        </Button>
-                    </div>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === '/settings'}
+                      tooltip="Settings"
+                    >
+                      <Link href="/settings">
+                        <Settings />
+                        <span>Settings</span>
+                      </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={logout}
+                      tooltip="Sign Out"
+                    >
+                        <LogOut />
+                        <span>Sign Out</span>
+                    </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
             </div>

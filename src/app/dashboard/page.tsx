@@ -17,21 +17,28 @@ import { hiraganaLessons, katakanaLessons } from '@/data/kana';
 import { useEffect, useState } from 'react';
 import { AppShell } from '@/components/layout/app-shell';
 import { withAuth } from '@/hooks/use-auth';
+import { LoadingIndicator } from '@/components/loading-indicator';
 
 const totalHiragana = hiraganaLessons.flatMap(l => l.kana).length;
 const totalKatakana = katakanaLessons.flatMap(l => l.kana).length;
 
 function Dashboard() {
-  const { learnedKana } = useProgress();
+  const { learnedKana, loading: progressLoading } = useProgress();
   const [hiraganaLearned, setHiraganaLearned] = useState(0);
   const [katakanaLearned, setKatakanaLearned] = useState(0);
 
   useEffect(() => {
-    const hiragana = hiraganaLessons.flatMap(l => l.kana).filter(k => learnedKana.has(k.kana)).length;
-    const katakana = katakanaLessons.flatMap(l => l.kana).filter(k => learnedKana.has(k.kana)).length;
-    setHiraganaLearned(hiragana);
-    setKatakanaLearned(katakana);
-  }, [learnedKana]);
+    if (!progressLoading) {
+      const hiragana = hiraganaLessons.flatMap(l => l.kana).filter(k => learnedKana.has(k.kana)).length;
+      const katakana = katakanaLessons.flatMap(l => l.kana).filter(k => learnedKana.has(k.kana)).length;
+      setHiraganaLearned(hiragana);
+      setKatakanaLearned(katakana);
+    }
+  }, [learnedKana, progressLoading]);
+
+  if (progressLoading) {
+    return <LoadingIndicator />;
+  }
 
   const hiraganaProgress = totalHiragana > 0 ? (hiraganaLearned / totalHiragana) * 100 : 0;
   const katakanaProgress = totalKatakana > 0 ? (katakanaLearned / totalKatakana) * 100 : 0;

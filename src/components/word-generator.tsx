@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { BotMessageSquare, Sparkles } from 'lucide-react';
 import { shuffle } from 'lodash';
+import { LoadingIndicator } from './loading-indicator';
 
 const allExampleWords = [...hiraganaLessons, ...katakanaLessons]
   .flatMap(l => l.kana)
@@ -24,7 +25,7 @@ interface WordResult {
 }
 
 export function WordGenerator() {
-  const { learnedKana } = useProgress();
+  const { learnedKana, loading } = useProgress();
   const [selectedKana, setSelectedKana] = useState<Set<string>>(new Set());
   const [generatedWord, setGeneratedWord] = useState<WordResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -69,6 +70,10 @@ export function WordGenerator() {
         setNoWordsFound(true);
     }
   };
+
+  if (loading) {
+    return <LoadingIndicator />;
+  }
 
   return (
     <div className="grid grid-cols-1 gap-8">

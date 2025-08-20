@@ -11,6 +11,7 @@ import { shuffle } from 'lodash';
 import { useProgress } from '@/hooks/use-progress';
 import { Volume2 } from 'lucide-react';
 import { StrugglingHint } from './struggling-hint';
+import { LoadingIndicator } from './loading-indicator';
 
 interface QuizProps {
   kanaInLesson: Kana[];
@@ -61,7 +62,7 @@ const generateQuestions = (kanaInLesson: Kana[]): Question[] => {
 };
 
 export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps) {
-  const { addQuizResult, getStats } = useProgress();
+  const { addQuizResult, getStats, loading } = useProgress();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -70,6 +71,7 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
   const [isFinished, setIsFinished] = useState(false);
   const [audioUsedOn, setAudioUsedOn] = useState<Set<number>>(new Set());
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
 
   useEffect(() => {
@@ -89,8 +91,8 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
     }
   };
 
-  if (questions.length === 0) {
-    return <div>Loading quiz...</div>;
+  if (questions.length === 0 || loading) {
+    return <LoadingIndicator />;
   }
   
   const currentQuestion = questions[currentQuestionIndex];
@@ -99,9 +101,10 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
   const finalScorePercentage = (score / questions.length) * 100;
   const passed = finalScorePercentage >= passPercentage;
 
-  const handleAnswer = (answer: string) => {
+  const handleAnswer = async (answer: string) => {
     if (selectedAnswer) return;
     setHasInteracted(true);
+    setIsSubmitting(true);
 
     setSelectedAnswer(answer);
     let correct = false;
@@ -117,14 +120,16 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
     }
 
     const wasAudioUsed = audioUsedOn.has(currentQuestionIndex);
-    addQuizResult({
+    await addQuizResult({
         kana: currentQuestion.kana.kana,
         correct,
         audioUsed: wasAudioUsed,
+        timestamp: new Date().toISOString(),
     });
     
     setTimeout(() => {
       setHasInteracted(false);
+      setIsSubmitting(false);
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(i => i + 1);
         setSelectedAnswer(null);
@@ -153,32 +158,36 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
                 <CardDescription>You scored {finalScorePercentage.toFixed(0)}%</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-                {passed ? (
-                    <p className="text-green-600 font-semibold">Congratulations! You passed the quiz and unlocked the next lesson.</p>
-                ) : (
-                    <p className="text-destructive font-semibold">Nice try! You need {passPercentage}% to pass. Please review the lesson and try again.</p>
+                {isSubmitting ? <LoadingIndicator /> : (
+                  <>
+                    {passed ? (
+                        <p className="text-green-600 font-semibold">Congratulations! You passed the quiz and unlocked the next lesson.</p>
+                    ) : (
+                        <p className="text-destructive font-semibold">Nice try! You need {passPercentage}% to pass. Please review the lesson and try again.</p>
+                    )}
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                        <Card className="p-4">
+                            <CardDescription>ACCURACY (NO SOUND)</CardDescription>
+                            <p className="text-2xl font-bold">
+                                {stats.noSound.total > 0 ? `${((stats.noSound.correct / stats.noSound.total) * 100).toFixed(0)}%` : 'N/A'}
+                            </p>
+                            <p className="text-xs text-muted-foreground">{stats.noSound.correct} / {stats.noSound.total} correct</p>
+                        </Card>
+                        <Card className="p-4">
+                            <CardDescription>ACCURACY (WITH SOUND)</CardDescription>
+                            <p className="text-2xl font-bold">
+                                {stats.withSound.total > 0 ? `${((stats.withSound.correct / stats.withSound.total) * 100).toFixed(0)}%` : 'N/A'}
+                            </p>
+                            <p className="text-xs text-muted-foreground">{stats.withSound.correct} / {stats.withSound.total} correct</p>
+                        </Card>
+                    </div>
+                    <div className="flex justify-center gap-4">
+                        <Button variant="outline" onClick={onBackToLearn}>Review Lesson</Button>
+                        {passed && <Button onClick={onQuizComplete}>Continue</Button>}
+                        {!passed && <Button onClick={() => window.location.reload()}>Try Again</Button>}
+                    </div>
+                  </>
                 )}
-                 <div className="grid grid-cols-2 gap-4 text-sm">
-                    <Card className="p-4">
-                        <CardDescription>ACCURACY (NO SOUND)</CardDescription>
-                        <p className="text-2xl font-bold">
-                            {stats.noSound.total > 0 ? `${((stats.noSound.correct / stats.noSound.total) * 100).toFixed(0)}%` : 'N/A'}
-                        </p>
-                        <p className="text-xs text-muted-foreground">{stats.noSound.correct} / {stats.noSound.total} correct</p>
-                    </Card>
-                     <Card className="p-4">
-                        <CardDescription>ACCURACY (WITH SOUND)</CardDescription>
-                        <p className="text-2xl font-bold">
-                             {stats.withSound.total > 0 ? `${((stats.withSound.correct / stats.withSound.total) * 100).toFixed(0)}%` : 'N/A'}
-                        </p>
-                         <p className="text-xs text-muted-foreground">{stats.withSound.correct} / {stats.withSound.total} correct</p>
-                    </Card>
-                </div>
-                <div className="flex justify-center gap-4">
-                    <Button variant="outline" onClick={onBackToLearn}>Review Lesson</Button>
-                    {passed && <Button onClick={onQuizComplete}>Continue</Button>}
-                    {!passed && <Button onClick={() => window.location.reload()}>Try Again</Button>}
-                </div>
             </CardContent>
         </Card>
     );
@@ -217,7 +226,7 @@ export function Quiz({ kanaInLesson, onQuizComplete, onBackToLearn }: QuizProps)
             <Button
               key={option}
               onClick={() => handleAnswer(option)}
-              disabled={!!selectedAnswer}
+              disabled={!!selectedAnswer || isSubmitting}
               className={cn('h-20 text-3xl font-bold transition-all duration-300', getButtonClass(option))}
             >
               {option}
