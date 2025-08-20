@@ -10,7 +10,6 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  type CarouselApi,
 } from '@/components/ui/carousel';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,6 @@ import { Quiz } from '@/components/quiz';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { StrugglingHint } from './struggling-hint';
 
 interface KanaLessonClientProps {
   lesson: KanaLesson;
@@ -28,8 +26,6 @@ interface KanaLessonClientProps {
 export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
   const { completeLesson, addLearnedKana } = useProgress();
   const [view, setView] = useState<'learn' | 'quiz' | 'completed'>('learn');
-  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
-  const [hasInteracted, setHasInteracted] = useState(false);
 
   const handleQuizComplete = () => {
     lesson.kana.forEach((k) => addLearnedKana(k.kana));
@@ -41,7 +37,6 @@ export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
     try {
       const audio = new Audio(audioSrc);
       audio.play();
-      setHasInteracted(true);
     } catch (error) {
       console.error('Failed to play audio:', error);
     }
@@ -96,15 +91,7 @@ export function KanaLessonClient({ lesson, kanaType }: KanaLessonClientProps) {
           </p>
         </div>
 
-        <Carousel 
-            className="w-full max-w-sm md:max-w-md lg:max-w-lg relative"
-            setApi={setCarouselApi}
-            onPointerDown={() => setHasInteracted(true)}
-        >
-          <StrugglingHint
-            hasInteracted={hasInteracted}
-            text="Struggling? Tap a character to hear its pronunciation."
-          />
+        <Carousel className="w-full max-w-sm md:max-w-md lg:max-w-lg">
           <CarouselContent>
             {lesson.kana.map((k) => (
               <CarouselItem key={k.kana}>

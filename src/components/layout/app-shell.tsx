@@ -23,7 +23,6 @@ import { ThemeSwitcher } from '@/components/theme-switcher';
 import { ModeToggle } from '../mode-toggle';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '../ui/button';
-import { SplashScreen } from '../splash-screen';
 
 function AppShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -162,27 +161,9 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
 
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const [showSplash, setShowSplash] = React.useState(true);
-  
-  React.useEffect(() => {
-    const splashShown = sessionStorage.getItem('splashShown');
-    if (splashShown) {
-      setShowSplash(false);
-    } else {
-      const timer = setTimeout(() => {
-        setShowSplash(false);
-        sessionStorage.setItem('splashShown', 'true');
-      }, 1800); 
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
   return (
     <SidebarProvider>
-      {showSplash && <SplashScreen />}
-      <div className={showSplash ? 'opacity-0' : 'opacity-100 transition-opacity duration-300'}>
-        <AppShellContent>{children}</AppShellContent>
-      </div>
+      <AppShellContent>{children}</AppShellContent>
     </SidebarProvider>
   );
 }

@@ -48,29 +48,26 @@ export function KanaGrid({ lessons, kanaType }: KanaGridProps) {
 
   return (
     <div className="space-y-8">
-      {lessons.map((lesson, lessonIndex) => {
+      {lessons.map((lesson) => {
         const unlocked = isLessonUnlocked(lesson.slug, kanaType);
         const allKanaInLessonLearned = lesson.kana.every(k => learnedKana.has(k.kana));
 
         return (
-          <div key={lesson.slug} className="animate-fade-in-up" style={{ animationDelay: `${lessonIndex * 150}ms`}}>
+          <div key={lesson.slug}>
             <div className="flex items-center gap-4 mb-4">
               <h2 className="text-2xl font-bold">{lesson.name}</h2>
               {isMounted && !unlocked && <Lock className="h-5 w-5 text-muted-foreground" />}
               {isMounted && unlocked && allKanaInLessonLearned && <CheckCircle2 className="h-5 w-5 text-green-500" />}
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {lesson.kana.map((k, index) => {
+              {lesson.kana.map((k) => {
                 const isLearned = learnedKana.has(k.kana);
                 return (
                   <Link
                     key={k.kana}
                     href={unlocked ? `/learn/${kanaType}/${lesson.slug}` : '#'}
                     aria-disabled={!unlocked}
-                    className={cn(
-                      'transition-transform duration-200',
-                      unlocked ? 'hover:scale-105' : 'cursor-not-allowed'
-                    )}
+                    className={cn(!unlocked && 'cursor-not-allowed')}
                   >
                     <Card
                       className={cn(
