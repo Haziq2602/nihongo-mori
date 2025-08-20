@@ -89,9 +89,9 @@ function Dashboard() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="flex flex-1 flex-col justify-end gap-4">
+              <CardContent className="flex flex-col justify-end gap-4 flex-1">
                 {card.progress !== null && <Progress value={card.progress} aria-label={`${card.progress.toFixed(0)}% ${card.title} learned`} />}
-                <Button asChild variant={card.title.includes('Generator') ? 'secondary' : 'default'} className="w-full">
+                <Button asChild variant={card.title.includes('Generator') ? 'secondary' : 'default'} className="w-full mt-auto">
                   <Link href={card.href}>
                     {card.title.includes('Generator') ? 'Go to Generator' : 'Start Learning'}
                     <ArrowRight className="ml-2 h-4 w-4" />
