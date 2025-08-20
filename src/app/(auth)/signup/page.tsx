@@ -56,10 +56,10 @@ export default function SignupPage() {
     <div className="flex min-h-screen items-center justify-center bg-muted/50">
       <Card className="mx-auto max-w-sm">
         <CardHeader className="text-center">
-            <div className="flex justify-center items-center gap-2 mb-4">
+            <Link href="/" className="flex justify-center items-center gap-2 mb-4">
                 <Leaf className="h-8 w-8 text-primary" />
                 <CardTitle className="text-2xl">Nihongo Mori</CardTitle>
-            </div>
+            </Link>
           <CardDescription>
             Create an account to start your learning journey
           </CardDescription>

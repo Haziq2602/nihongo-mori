@@ -34,6 +34,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     await firebaseSignOut(auth);
+    // Redirect to home page after logout
+    window.location.href = '/';
   };
 
   return (
@@ -60,10 +62,25 @@ export const withAuth = <P extends object>(Component: React.ComponentType<P>) =>
         router.push('/login');
       }
     }, [user, loading, router, pathname]);
+    
+    // Allow access to landing page for logged in users, but redirect from login/signup
+    useEffect(() => {
+        if (!loading && user) {
+            if (pathname === '/login' || pathname === '/signup') {
+                router.push('/dashboard');
+            }
+        }
+    }, [user, loading, router, pathname]);
 
-    if (loading || (!user && !unprotectedRoutes.includes(pathname))) {
+
+    if (loading && !unprotectedRoutes.includes(pathname)) {
       return <SplashScreen />;
     }
+
+    if (!user && !unprotectedRoutes.includes(pathname)) {
+        return <SplashScreen />;
+    }
+
 
     return <Component {...props} />;
   };
