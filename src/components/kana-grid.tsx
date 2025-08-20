@@ -47,7 +47,7 @@ export function KanaGrid({ lessons, kanaType }: KanaGridProps) {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-fade-in-up">
       {lessons.map((lesson) => {
         const unlocked = isLessonUnlocked(lesson.slug, kanaType);
         const allKanaInLessonLearned = lesson.kana.every(k => learnedKana.has(k.kana));
@@ -60,7 +60,7 @@ export function KanaGrid({ lessons, kanaType }: KanaGridProps) {
               {isMounted && unlocked && allKanaInLessonLearned && <CheckCircle2 className="h-5 w-5 text-green-500" />}
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {lesson.kana.map((k) => {
+              {lesson.kana.map((k, index) => {
                 const isLearned = learnedKana.has(k.kana);
                 return (
                   <Link
@@ -68,9 +68,10 @@ export function KanaGrid({ lessons, kanaType }: KanaGridProps) {
                     href={unlocked ? `/learn/${kanaType}/${lesson.slug}` : '#'}
                     aria-disabled={!unlocked}
                     className={cn(
-                      'transition-transform duration-200',
+                      'transition-transform duration-200 animate-fade-in-up',
                       unlocked ? 'hover:scale-105' : 'cursor-not-allowed'
                     )}
+                    style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <Card
                       className={cn(

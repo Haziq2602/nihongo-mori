@@ -31,7 +31,7 @@ export function StrugglingHint({ hasInteracted, text, delay = 10000 }: Strugglin
     <div
       className={cn(
         'absolute -top-16 left-1/2 -translate-x-1/2 z-10 p-4 rounded-lg bg-card border shadow-lg transition-opacity duration-500 flex items-center gap-3',
-        showHint ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        showHint ? 'opacity-100 animate-float' : 'opacity-0 pointer-events-none'
       )}
     >
         <Cloud className="h-6 w-6 text-muted-foreground" />

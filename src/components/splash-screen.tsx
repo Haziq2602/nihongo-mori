@@ -9,7 +9,7 @@ export function SplashScreen() {
     <div
       className={cn(
         'fixed inset-0 z-50 flex flex-col items-center justify-center bg-background',
-        'animate-out fade-out duration-500'
+        'animate-out fade-out-50 duration-500'
       )}
     >
       <div className="flex animate-brandish items-center gap-4">
