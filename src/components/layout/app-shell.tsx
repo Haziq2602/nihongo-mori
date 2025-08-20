@@ -21,9 +21,9 @@ import { Leaf, BookOpen, BotMessageSquare, Home, PanelLeft, LogOut, User } from 
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { ModeToggle } from '../mode-toggle';
-import { SplashScreen } from '../splash-screen';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '../ui/button';
+import { SplashScreen } from '../splash-screen';
 
 function AppShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -120,7 +120,7 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
             <div className="mt-auto">
               <div className="px-4 mb-2 text-xs font-medium text-muted-foreground">USER</div>
               <SidebarMenu>
-                <SidebarMenuItem>
+                 <SidebarMenuItem>
                     <div className="flex items-center gap-2 p-2">
                         <ThemeSwitcher />
                         <ModeToggle />
@@ -162,20 +162,24 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
 
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const [loading, setLoading] = React.useState(true);
+  const [showSplash, setShowSplash] = React.useState(true);
   
   React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000); 
-
-    return () => clearTimeout(timer);
+    const splashShown = sessionStorage.getItem('splashShown');
+    if (splashShown) {
+      setShowSplash(false);
+    } else {
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+        sessionStorage.setItem('splashShown', 'true');
+      }, 2000); 
+      return () => clearTimeout(timer);
+    }
   }, []);
-
 
   return (
     <SidebarProvider>
-      {loading && <SplashScreen />}
+      {showSplash && <SplashScreen />}
       <AppShellContent>{children}</AppShellContent>
     </SidebarProvider>
   );
