@@ -9,13 +9,13 @@ import React from 'react';
 import { VocabQuiz } from '@/components/vocab-quiz';
 
 interface VocabQuizPageProps {
-  params: {
+  params: Promise<{
     lessonSlug: string;
-  };
+  }>;
 }
 
 function VocabQuizPage({ params }: VocabQuizPageProps) {
-  const { lessonSlug } = params;
+  const { lessonSlug } = React.use(params);
   const searchParams = useSearchParams();
   const kanaType = searchParams.get('type') as 'hiragana' | 'katakana' | null;
 
