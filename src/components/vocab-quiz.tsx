@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { KanaLesson, Vocabulary } from '@/data/kana';
+import { KanaLesson, Vocabulary, hiraganaLessons, katakanaLessons } from '@/data/kana';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -55,13 +55,21 @@ export function VocabQuiz({ lesson, kanaType }: VocabQuizProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    setQuestions(generateQuestions(lesson));
+    if (lesson.vocabulary.length > 0) {
+      setQuestions(generateQuestions(lesson));
+    }
   }, [lesson]);
   
-  if (questions.length === 0 || loading) {
+  if (loading) {
     return <LoadingIndicator />;
   }
   
+  if (questions.length === 0) {
+      // This can happen if the lesson has no vocabulary or while questions are generating.
+      // You could show a specific message or just the loading indicator.
+      return <LoadingIndicator />;
+  }
+
   const currentQuestion = questions[currentQuestionIndex];
   const progress = (currentQuestionIndex / questions.length) * 100;
   const passPercentage = 80;
@@ -88,7 +96,8 @@ export function VocabQuiz({ lesson, kanaType }: VocabQuizProps) {
         setIsCorrect(null);
       } else {
         setIsFinished(true);
-        if (finalScorePercentage >= passPercentage) {
+        // We need to check the score at the end of the quiz
+        if (((score + (correct ? 1 : 0)) / questions.length) * 100 >= passPercentage) {
             completeVocabLesson(lesson.slug, kanaType);
         }
       }
