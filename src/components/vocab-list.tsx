@@ -14,7 +14,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { LoadingIndicator } from './loading-indicator';
-import { Lock, CheckCircle2, Zap } from 'lucide-react';
+import { Lock, CheckCircle2, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -24,7 +24,7 @@ const allLessons = {
 };
 
 export function VocabList() {
-  const { isVocabLessonUnlocked, loading, isLessonUnlocked } = useProgress();
+  const { isVocabLessonUnlocked, loading } = useProgress();
 
   const lessonData = useMemo(() => {
     if (loading) return { hiragana: [], katakana: [] };
@@ -36,7 +36,7 @@ export function VocabList() {
             const unlocked = isVocabLessonUnlocked(lesson.slug, type);
             // A vocab lesson is considered "passed" if the *next* lesson is unlocked.
             const nextLesson = arr[index + 1];
-            const passed = nextLesson ? isVocabLessonUnlocked(nextLesson.slug, type) : false; // Or check for 100% completion
+            const passed = nextLesson ? isVocabLessonUnlocked(nextLesson.slug, type) : false;
 
             return {
                 ...lesson,
@@ -51,7 +51,7 @@ export function VocabList() {
       hiragana: processLessons('hiragana'),
       katakana: processLessons('katakana'),
     };
-  }, [isVocabLessonUnlocked, isLessonUnlocked, loading]);
+  }, [isVocabLessonUnlocked, loading]);
 
 
   if (loading) {
@@ -75,7 +75,7 @@ export function VocabList() {
 
   const renderLessonGrid = (lessons: typeof lessonData.hiragana) => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {lessons.map(lesson => (
+        {lessons.filter(l => l.unlocked).map(lesson => (
             <Card key={lesson.slug + lesson.type} className={cn("flex flex-col", !lesson.unlocked && "bg-muted/50")}>
               <CardHeader>
                   <div className="flex justify-between items-start">
@@ -93,8 +93,8 @@ export function VocabList() {
               <CardFooter className="mt-auto">
                 <Button asChild className="w-full" disabled={!lesson.unlocked}>
                   <Link href={`/tools/vocab/${lesson.slug}?type=${lesson.type}`}>
-                    <Zap className="mr-2 h-4 w-4" />
-                    {lesson.passed ? 'Review Quiz' : 'Take Quiz'}
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    {lesson.passed ? 'Review Lesson' : 'Start Lesson'}
                   </Link>
                 </Button>
               </CardFooter>

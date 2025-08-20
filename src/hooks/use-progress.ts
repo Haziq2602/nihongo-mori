@@ -64,6 +64,9 @@ export function useProgress() {
             if (!data.completedVocabLessons) {
               data.completedVocabLessons = ['vowels-hiragana'];
             }
+             if (!data.completedLessons.includes('vowels-hiragana')) {
+              data.completedLessons.push('vowels-hiragana');
+            }
             setProgress(data);
           } else {
             // Create initial progress for new user
@@ -138,17 +141,20 @@ export function useProgress() {
   
       if (currentLessonIndex !== -1 && currentLessonIndex < lessons.length - 1) {
           const nextLesson = lessons[currentLessonIndex + 1];
-          const nextVocabLessonId = `${nextLesson.slug}-${kanaType}`;
-          
-          setProgress(current => ({
-              ...current,
-              completedVocabLessons: Array.from(new Set([...current.completedVocabLessons, nextVocabLessonId])),
-          }));
+          // Only unlock the next vocab lesson if it has vocabulary
+          if (nextLesson.vocabulary && nextLesson.vocabulary.length > 0) {
+            const nextVocabLessonId = `${nextLesson.slug}-${kanaType}`;
+            
+            setProgress(current => ({
+                ...current,
+                completedVocabLessons: Array.from(new Set([...current.completedVocabLessons, nextVocabLessonId])),
+            }));
 
-          await updateDoc(progressRef, {
-              completedVocabLessons: arrayUnion(nextVocabLessonId),
-              lastUpdated: serverTimestamp(),
-          });
+            await updateDoc(progressRef, {
+                completedVocabLessons: arrayUnion(nextVocabLessonId),
+                lastUpdated: serverTimestamp(),
+            });
+          }
       }
   }, [getProgressRef]);
 
@@ -158,9 +164,10 @@ export function useProgress() {
   }, [progress.completedLessons]);
 
   const isVocabLessonUnlocked = useCallback((lessonSlug: string, kanaType: 'hiragana' | 'katakana') => {
-    const lessonId = `${lessonSlug}-${kanaType}`;
-    return progress.completedVocabLessons.includes(lessonId);
-  }, [progress.completedVocabLessons]);
+    // A vocab lesson is unlocked if the corresponding kana lesson is completed.
+    const kanaLessonId = `${lessonSlug}-${kanaType}`;
+    return progress.completedLessons.includes(kanaLessonId);
+  }, [progress.completedLessons]);
 
   const getLearnedKanaSet = useCallback(() => {
     return new Set(progress.learnedKana);
