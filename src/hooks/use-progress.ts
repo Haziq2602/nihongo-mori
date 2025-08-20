@@ -30,7 +30,7 @@ interface QuizStats {
 const defaultProgress: ProgressData = { 
   learnedKana: [], 
   completedLessons: ['vowels-hiragana'],
-  completedVocabLessons: ['vowels-hiragana'], // Unlock the first vocab lesson by default
+  completedVocabLessons: [], // A vocab lesson is 'completed' when its quiz is passed
   quizLog: [],
   lastUpdated: null
 };
@@ -60,13 +60,12 @@ export function useProgress() {
           const docSnap = await getDoc(progressRef);
           if (docSnap.exists()) {
             const data = docSnap.data() as ProgressData;
-            // Ensure completedVocabLessons exists to avoid issues with older data structures
-            if (!data.completedVocabLessons) {
-              data.completedVocabLessons = ['vowels-hiragana'];
-            }
-             if (!data.completedLessons.includes('vowels-hiragana')) {
+            // Ensure default lessons are present for backward compatibility
+            if (!data.completedLessons) data.completedLessons = [];
+            if (!data.completedLessons.includes('vowels-hiragana')) {
               data.completedLessons.push('vowels-hiragana');
             }
+            if (!data.completedVocabLessons) data.completedVocabLessons = [];
             setProgress(data);
           } else {
             // Create initial progress for new user
@@ -108,54 +107,45 @@ export function useProgress() {
     const lessons = kanaType === 'hiragana' ? hiraganaLessons : katakanaLessons;
     const currentLessonIndex = lessons.findIndex(l => l.slug === lessonSlug);
     
-    let lessonsToComplete = [lessonId];
+    const lessonsToComplete = new Set(progress.completedLessons);
+    lessonsToComplete.add(lessonId);
+
     // Unlock next kana lesson
     if (currentLessonIndex !== -1 && currentLessonIndex < lessons.length - 1) {
       const nextLesson = lessons[currentLessonIndex + 1];
       const nextLessonId = `${nextLesson.slug}-${kanaType}`;
-      lessonsToComplete.push(nextLessonId);
+      lessonsToComplete.add(nextLessonId);
     }
-     // Also unlock the corresponding vocab lesson
-    const vocabLessonId = `${lessonSlug}-${kanaType}`;
     
     setProgress(current => ({ 
         ...current, 
-        completedLessons: Array.from(new Set([...current.completedLessons, ...lessonsToComplete])),
-        completedVocabLessons: Array.from(new Set([...current.completedVocabLessons, vocabLessonId]))
+        completedLessons: Array.from(lessonsToComplete),
     }));
     
     await updateDoc(progressRef, {
-        completedLessons: arrayUnion(...lessonsToComplete),
-        completedVocabLessons: arrayUnion(vocabLessonId),
+        completedLessons: Array.from(lessonsToComplete),
         lastUpdated: serverTimestamp(),
     });
 
-  }, [getProgressRef]);
+  }, [getProgressRef, progress.completedLessons]);
 
   const completeVocabLesson = useCallback(async (lessonSlug: string, kanaType: 'hiragana' | 'katakana') => {
       const progressRef = getProgressRef();
       if (!progressRef) return;
-  
-      const lessons = kanaType === 'hiragana' ? hiraganaLessons : katakanaLessons;
-      const currentLessonIndex = lessons.findIndex(l => l.slug === lessonSlug);
-  
-      if (currentLessonIndex !== -1 && currentLessonIndex < lessons.length - 1) {
-          const nextLesson = lessons[currentLessonIndex + 1];
-          // Only unlock the next vocab lesson if it has vocabulary
-          if (nextLesson.vocabulary && nextLesson.vocabulary.length > 0) {
-            const nextVocabLessonId = `${nextLesson.slug}-${kanaType}`;
-            
-            setProgress(current => ({
-                ...current,
-                completedVocabLessons: Array.from(new Set([...current.completedVocabLessons, nextVocabLessonId])),
-            }));
 
-            await updateDoc(progressRef, {
-                completedVocabLessons: arrayUnion(nextVocabLessonId),
-                lastUpdated: serverTimestamp(),
-            });
-          }
-      }
+      // Mark the current vocab lesson as passed/completed
+      const lessonId = `${lessonSlug}-${kanaType}`;
+  
+      setProgress(current => ({
+          ...current,
+          completedVocabLessons: Array.from(new Set([...current.completedVocabLessons, lessonId])),
+      }));
+
+      await updateDoc(progressRef, {
+          completedVocabLessons: arrayUnion(lessonId),
+          lastUpdated: serverTimestamp(),
+      });
+
   }, [getProgressRef]);
 
   const isLessonUnlocked = useCallback((lessonSlug: string, kanaType: 'hiragana' | 'katakana') => {
@@ -166,6 +156,20 @@ export function useProgress() {
   const isVocabLessonUnlocked = useCallback((lessonSlug: string, kanaType: 'hiragana' | 'katakana') => {
     // A vocab lesson is unlocked if the corresponding kana lesson is completed.
     const kanaLessonId = `${lessonSlug}-${kanaType}`;
+    
+    const lessons = kanaType === 'hiragana' ? hiraganaLessons : katakanaLessons;
+    const currentLessonIndex = lessons.findIndex(l => l.slug === lessonSlug);
+
+    // The very first lesson is always unlocked.
+    if (currentLessonIndex === 0) return true;
+
+    // For subsequent lessons, the previous *kana* lesson must be completed.
+    if (currentLessonIndex > 0) {
+        const prevLesson = lessons[currentLessonIndex - 1];
+        const prevKanaLessonId = `${prevLesson.slug}-${kanaType}`;
+        return progress.completedLessons.includes(prevKanaLessonId);
+    }
+
     return progress.completedLessons.includes(kanaLessonId);
   }, [progress.completedLessons]);
 

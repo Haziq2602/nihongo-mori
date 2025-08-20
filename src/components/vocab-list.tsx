@@ -24,82 +24,81 @@ const allLessons = {
 };
 
 export function VocabList() {
-  const { isVocabLessonUnlocked, loading } = useProgress();
+  const { isVocabLessonUnlocked, loading, completedVocabLessons } = useProgress();
 
   const lessonData = useMemo(() => {
     if (loading) return { hiragana: [], katakana: [] };
-    
-    const processLessons = (type: 'hiragana' | 'katakana') => 
-        allLessons[type]
-        .filter(lesson => lesson.vocabulary && lesson.vocabulary.length > 0)
-        .map((lesson, index, arr) => {
-            const unlocked = isVocabLessonUnlocked(lesson.slug, type);
-            // A vocab lesson is considered "passed" if the *next* lesson is unlocked.
-            const nextLesson = arr[index + 1];
-            const passed = nextLesson ? isVocabLessonUnlocked(nextLesson.slug, type) : false;
 
-            return {
-                ...lesson,
-                title: `${type.charAt(0).toUpperCase() + type.slice(1)} - ${lesson.name}`,
-                type,
-                unlocked,
-                passed,
-            };
+    const processLessons = (type: 'hiragana' | 'katakana') =>
+      allLessons[type]
+        .filter(lesson => lesson.vocabulary && lesson.vocabulary.length > 0)
+        .map((lesson) => {
+          const lessonId = `${lesson.slug}-${type}`;
+          const unlocked = isVocabLessonUnlocked(lesson.slug, type);
+          const passed = completedVocabLessons.has(lessonId);
+
+          return {
+            ...lesson,
+            title: `${type.charAt(0).toUpperCase() + type.slice(1)} - ${lesson.name}`,
+            type,
+            unlocked,
+            passed,
+          };
         });
 
     return {
       hiragana: processLessons('hiragana'),
       katakana: processLessons('katakana'),
     };
-  }, [isVocabLessonUnlocked, loading]);
+  }, [isVocabLessonUnlocked, completedVocabLessons, loading]);
 
 
   if (loading) {
     return <LoadingIndicator />;
   }
-  
+
   const hasNoUnlocked = lessonData.hiragana.every(l => !l.unlocked) && lessonData.katakana.every(l => !l.unlocked);
 
   if (hasNoUnlocked) {
-      return (
-          <Card>
-              <CardHeader>
-                <CardTitle>No Vocabulary Unlocked</CardTitle>
-                <CardDescription>
-                    Complete your first kana lesson to unlock its vocabulary list and quiz.
-                </CardDescription>
-              </CardHeader>
-          </Card>
-      )
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>No Vocabulary Unlocked</CardTitle>
+          <CardDescription>
+            Complete your first kana lesson to unlock its vocabulary list and quiz.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    )
   }
 
   const renderLessonGrid = (lessons: typeof lessonData.hiragana) => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {lessons.filter(l => l.unlocked).map(lesson => (
-            <Card key={lesson.slug + lesson.type} className={cn("flex flex-col", !lesson.unlocked && "bg-muted/50")}>
-              <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                        <CardTitle className="text-xl">{lesson.name}</CardTitle>
-                        <CardDescription>{lesson.vocabulary.length} words</CardDescription>
-                    </div>
-                    {lesson.passed ? (
-                         <CheckCircle2 className="h-6 w-6 text-green-500" />
-                    ) : (
-                        !lesson.unlocked && <Lock className="h-6 w-6 text-muted-foreground" />
-                    )}
-                  </div>
-              </CardHeader>
-              <CardFooter className="mt-auto">
-                <Button asChild className="w-full" disabled={!lesson.unlocked}>
-                  <Link href={`/tools/vocab/${lesson.slug}?type=${lesson.type}`}>
-                    <BookOpen className="mr-2 h-4 w-4" />
-                    {lesson.passed ? 'Review Lesson' : 'Start Lesson'}
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
-        ))}
+      {lessons.map(lesson => (
+        <Card key={lesson.slug + lesson.type} className={cn("flex flex-col", !lesson.unlocked && "bg-muted/50 cursor-not-allowed")}>
+          <CardHeader>
+            <div className="flex justify-between items-start">
+              <div>
+                <CardTitle className="text-xl">{lesson.name}</CardTitle>
+                <CardDescription>{lesson.vocabulary.length} words</CardDescription>
+              </div>
+              {lesson.passed ? (
+                <CheckCircle2 className="h-6 w-6 text-green-500" />
+              ) : (
+                !lesson.unlocked && <Lock className="h-6 w-6 text-muted-foreground" />
+              )}
+            </div>
+          </CardHeader>
+          <CardFooter className="mt-auto">
+            <Button asChild className="w-full" disabled={!lesson.unlocked}>
+              <Link href={lesson.unlocked ? `/tools/vocab/${lesson.slug}?type=${lesson.type}` : '#'}>
+                <BookOpen className="mr-2 h-4 w-4" />
+                {lesson.passed ? 'Review Lesson' : 'Start Lesson'}
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      ))}
     </div>
   );
 
