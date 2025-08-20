@@ -6,15 +6,16 @@ import { notFound } from 'next/navigation';
 import { KanaGrid } from '@/components/kana-grid';
 import { AppShell } from '@/components/layout/app-shell';
 import { withAuth } from '@/hooks/use-auth';
+import React from 'react';
 
 interface LearnPageProps {
-  params: {
+  params: Promise<{
     kanaType: 'hiragana' | 'katakana';
-  };
+  }>;
 }
 
 function LearnPage({ params }: LearnPageProps) {
-  const { kanaType } = params;
+  const { kanaType } = React.use(params);
   const lessons = kanaType === 'hiragana' ? hiraganaLessons : katakanaLessons;
 
   if (!lessons) {
