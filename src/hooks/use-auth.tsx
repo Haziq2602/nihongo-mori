@@ -52,32 +52,36 @@ const unprotectedRoutes = ['/', '/login', '/signup'];
 
 export const withAuth = <P extends object>(Component: React.ComponentType<P>) => {
   const AuthComponent = (props: P) => {
-    const { user, loading } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+    const [isShowingLoader, setIsShowingLoader] = useState(true);
 
     useEffect(() => {
-      if (!loading && !user && !unprotectedRoutes.includes(pathname)) {
-        router.push('/');
+      if (!authLoading) {
+        // Enforce a minimum display time for the loader
+        const timer = setTimeout(() => {
+          setIsShowingLoader(false);
+        }, 1500);
+
+        return () => clearTimeout(timer);
       }
-    }, [user, loading, router, pathname]);
-    
+    }, [authLoading]);
+
     useEffect(() => {
-        if (!loading && user) {
-            if (pathname === '/login' || pathname === '/signup') {
-                router.push('/dashboard');
-            }
+      if (!authLoading && !isShowingLoader) {
+        if (!user && !unprotectedRoutes.includes(pathname)) {
+          router.push('/');
+        } else if (user && (pathname === '/login' || pathname === '/signup')) {
+          router.push('/dashboard');
         }
-    }, [user, loading, router, pathname]);
+      }
+    }, [user, authLoading, isShowingLoader, router, pathname]);
 
+    const isLoading = (authLoading || isShowingLoader) && !unprotectedRoutes.includes(pathname);
+    const isRedirecting = !user && !unprotectedRoutes.includes(pathname);
 
-    if (loading && !unprotectedRoutes.includes(pathname)) {
-      return <LoadingIndicator />;
-    }
-
-    if (!user && !unprotectedRoutes.includes(pathname)) {
-      // This state is brief while the redirect to '/' happens.
-      // Showing the loading indicator prevents a flash of unstyled content.
+    if (isLoading || isRedirecting) {
       return <LoadingIndicator />;
     }
 
