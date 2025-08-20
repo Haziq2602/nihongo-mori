@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -9,108 +10,107 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { useProgress } from '@/hooks/use-progress';
-import { ArrowRight, BookOpen, MessageSquareQuote, BotMessageSquare } from 'lucide-react';
-import { hiraganaLessons, katakanaLessons } from '@/data/kana';
-import { useEffect, useState } from 'react';
+import { ArrowRight, BookOpen, BotMessageSquare, Leaf } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
 
-const totalHiragana = hiraganaLessons.flatMap(l => l.kana).length;
-const totalKatakana = katakanaLessons.flatMap(l => l.kana).length;
-
-export default function Dashboard() {
-  const { learnedKana } = useProgress();
-  const [hiraganaLearned, setHiraganaLearned] = useState(0);
-  const [katakanaLearned, setKatakanaLearned] = useState(0);
-
-  useEffect(() => {
-    const hiragana = hiraganaLessons.flatMap(l => l.kana).filter(k => learnedKana.has(k.kana)).length;
-    const katakana = katakanaLessons.flatMap(l => l.kana).filter(k => learnedKana.has(k.kana)).length;
-    setHiraganaLearned(hiragana);
-    setKatakanaLearned(katakana);
-  }, [learnedKana]);
-
-  const hiraganaProgress = totalHiragana > 0 ? (hiraganaLearned / totalHiragana) * 100 : 0;
-  const katakanaProgress = totalKatakana > 0 ? (katakanaLearned / totalKatakana) * 100 : 0;
+export default function LandingPage() {
+  const { user, loading } = useAuth();
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Welcome to Nihongo Mori</h1>
-        <p className="text-muted-foreground">
-          Your guide to mastering Japanese Hiragana and Katakana.
-        </p>
-      </div>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="flex flex-col">
-          <CardHeader>
-            <div className="flex items-center gap-4">
-              <div className="rounded-lg bg-primary/10 p-3 text-primary">
-                <BookOpen className="h-6 w-6" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <CardTitle>Hiragana</CardTitle>
-                <CardDescription>
-                  {hiraganaLearned} / {totalHiragana} learned
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="flex flex-1 flex-col justify-end gap-4">
-            <Progress value={hiraganaProgress} aria-label={`${hiraganaProgress.toFixed(0)}% Hiragana learned`} />
-            <Button asChild className="w-full">
-              <Link href="/learn/hiragana">
-                Start Learning <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+    <div className="flex flex-1 flex-col">
+      <header className="flex h-16 items-center justify-between border-b bg-background/80 px-6 backdrop-blur">
+        <div className="flex items-center gap-2">
+          <Leaf className="h-6 w-6 text-primary" />
+          <span className="text-lg font-semibold">Nihongo Mori</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {loading ? null : user ? (
+            <Button asChild>
+              <Link href="/dashboard">Go to Dashboard</Link>
             </Button>
-          </CardContent>
-        </Card>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link href="/login">Log In</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/signup">Sign Up</Link>
+              </Button>
+            </>
+          )}
+        </div>
+      </header>
 
-        <Card className="flex flex-col">
-          <CardHeader>
-            <div className="flex items-center gap-4">
-              <div className="rounded-lg bg-primary/10 p-3 text-primary">
-                <BookOpen className="h-6 w-6" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <CardTitle>Katakana</CardTitle>
-                <CardDescription>
-                  {katakanaLearned} / {totalKatakana} learned
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="flex flex-1 flex-col justify-end gap-4">
-            <Progress value={katakanaProgress} aria-label={`${katakanaProgress.toFixed(0)}% Katakana learned`} />
-            <Button asChild className="w-full">
-              <Link href="/learn/katakana">
-                Start Learning <ArrowRight className="ml-2 h-4 w-4" />
+      <main className="flex-1">
+        <section className="flex flex-col items-center justify-center gap-6 px-4 py-20 text-center md:py-32">
+          <div className="space-y-4">
+            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+              Master Japanese Kana, Effortlessly.
+            </h1>
+            <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+              Nihongo Mori is an interactive learning experience designed to guide you through the first crucial steps of learning Japanese: mastering Hiragana and Katakana.
+            </p>
+          </div>
+          <div className="space-x-4">
+            <Button size="lg" asChild>
+              <Link href={user ? "/dashboard" : "/signup"}>
+                Get Started for Free
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
 
-        <Card className="flex flex-col">
-          <CardHeader>
-            <div className="flex items-center gap-4">
-              <div className="rounded-lg bg-accent/10 p-3 text-accent">
-                <BotMessageSquare className="h-6 w-6" />
-              </div>
-              <CardTitle>AI Word Generator</CardTitle>
+        <section className="bg-muted/50 py-16 md:py-24">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto mb-12 max-w-2xl text-center">
+              <h2 className="text-3xl font-bold tracking-tight">Features</h2>
+              <p className="mt-2 text-muted-foreground">Everything you need to learn and practice.</p>
             </div>
-            <CardDescription className="pt-2">
-              Generate example words with the Kana you've learned.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-1 flex-col justify-end">
-            <Button asChild variant="secondary" className="w-full">
-              <Link href="/tools/word-generator">
-                Go to Generator <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <Card>
+                <CardHeader className="flex flex-row items-center gap-4">
+                  <div className="rounded-lg bg-primary/10 p-3 text-primary">
+                    <BookOpen className="h-6 w-6" />
+                  </div>
+                  <CardTitle>Interactive Lessons</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Progress through structured lessons for Hiragana and Katakana, complete with audio and mnemonics.</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center gap-4">
+                  <div className="rounded-lg bg-primary/10 p-3 text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file-question"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><path d="M10 10.3c.2-.4.5-.8.9-1a2.1 2.1 0 0 1 2.6.4c.3.4.5.8.5 1.3 0 1.3-2 2-2 2"/><path d="M12 17h.01"/></svg>
+                  </div>
+                  <CardTitle>Gamified Quizzes</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Test your knowledge with engaging quizzes. You'll need to pass to unlock the next set of characters.</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center gap-4">
+                  <div className="rounded-lg bg-primary/10 p-3 text-primary">
+                    <BotMessageSquare className="h-6 w-6" />
+                  </div>
+                  <CardTitle>Word Generator</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Use the kana you've mastered to generate simple, custom example words from our vocabulary list.</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="border-t py-6">
+        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+          © {new Date().getFullYear()} Nihongo Mori. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 }

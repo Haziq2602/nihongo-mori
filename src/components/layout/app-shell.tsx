@@ -17,17 +17,20 @@ import {
   SidebarInset,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Leaf, BookOpen, BotMessageSquare, Home, PanelLeft } from 'lucide-react';
+import { Leaf, BookOpen, BotMessageSquare, Home, PanelLeft, LogOut } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { ModeToggle } from '../mode-toggle';
 import { SplashScreen } from '../splash-screen';
+import { useAuth } from '@/hooks/use-auth';
+import { Button } from '../ui/button';
 
 function AppShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isMobile = useIsMobile();
   const { setOpenMobile } = useSidebar();
   const [isMounted, setIsMounted] = React.useState(false);
+  const { logout } = useAuth();
 
   React.useEffect(() => {
     setIsMounted(true);
@@ -56,10 +59,10 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === '/'}
+                isActive={pathname === '/dashboard'}
                 tooltip="Dashboard"
               >
-                <Link href="/">
+                <Link href="/dashboard">
                   <Home />
                   <span>Dashboard</span>
                 </Link>
@@ -118,6 +121,10 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
             <ThemeSwitcher />
             <ModeToggle />
             {isMounted && <div className='flex-grow'/>}
+             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={logout}>
+                <LogOut />
+                <span className="sr-only">Sign Out</span>
+             </Button>
             {isMounted && !isMobile && (
                 <SidebarTrigger>
                    <PanelLeft />
