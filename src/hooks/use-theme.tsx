@@ -6,7 +6,7 @@ import * as React from 'react';
 const COLOR_THEME_STORAGE_KEY = 'nihongo-mori-color-theme';
 const THEME_STORAGE_KEY = 'nihongo-mori-theme';
 const DEFAULT_COLOR_THEME = 'theme-green';
-const DEFAULT_THEME = 'dark';
+const DEFAULT_THEME = 'system';
 
 type ColorTheme = 'theme-green' | 'theme-blue' | 'theme-red' | 'theme-orange' | 'theme-yellow' | 'theme-lavender';
 type Theme = 'dark' | 'light' | 'system';
