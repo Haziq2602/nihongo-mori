@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: 'Nihongo Mori',
   description: 'Learn basic Japanese (Hiragana and Katakana) with Nihongo Mori.',
   icons: {
-    icon: '/nihongo-mori-logo.png',
+    icon: '/audio/nihongo-mori-logo.jpg',
   },
 };
 
